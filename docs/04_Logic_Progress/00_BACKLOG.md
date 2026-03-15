@@ -160,12 +160,12 @@
 > 명세: [09_HUB_EXPERIENCE_SPEC.md](../03_Technical_Specs/09_HUB_EXPERIENCE_SPEC.md)
 
 허브 경험 구현
-- [ ] 허브 맵 중앙에 니어기억은행 건물 배치
-- [ ] 매칭 엔진 서버 → 허브 서버 Socket.io 이벤트 연결 (`botRegistered`, `matchRecorded` 등)
-- [ ] 봇 아바타 → 니어기억은행 이동 애니메이션 (등록/매칭 시)
-- [ ] 뱃지 5종 구현 (NEAR 인증 / 첫 만남 / 궁합 마스터 / 인기봇 / 인기왕)
-- [ ] 아바타 글로우/아우라 (인기도 기반 시각 차별화)
-- [ ] 관전 모드 — 매칭 시작/완료 공지 배너 + 결과 팝업 (NEAR Explorer 링크 포함)
+- [x] 허브 맵 중앙에 니어기억은행 건물 배치 (코드 기반 박스 건물 + NEAR BANK 텍스트)
+- [x] 매칭 엔진 서버 → 허브 서버 Socket.io 이벤트 연결 (`botRegistered`, `matchRecorded`, `matchStarted`, `matchCompleted`)
+- [x] 봇 아바타 → 니어기억은행 이동 애니메이션 (내 봇 대상 시 자동 이동)
+- [x] 뱃지 5종 구현 (NEAR 인증 / 첫 만남 / 궁합 마스터 / 인기봇 / 인기왕)
+- [x] 뱅크 글로우 펄스 (NEAR 이벤트 시 포인트 라이트 애니메이션)
+- [x] 관전 모드 — 매칭 시작/완료 공지 배너 + 결과 팝업 (NEAR Explorer 링크 포함)
 
 데모 + 제출
 - [ ] 데모 시나리오 전체 1회 완주 (배포 환경 기준, §8 시나리오)
