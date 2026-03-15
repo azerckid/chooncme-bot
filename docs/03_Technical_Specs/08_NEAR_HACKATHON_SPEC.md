@@ -1,6 +1,6 @@
 # NEAR 해커톤 구현 명세 (BuidlHack 2026)
 > Created: 2026-03-16
-> Last Updated: 2026-03-16
+> Last Updated: 2026-03-17
 
 ---
 
@@ -27,7 +27,7 @@
 | 날짜 | 이벤트 | 비고 |
 | :--- | :--- | :--- |
 | ~~2026-03-11~~ | ~~Kickoff AMA~~ | ~~완료~~ |
-| 2026-03-12 ~ 04-14 | 스폰서 워크숍 (온라인) | Near AI 워크숍 참석 권장 |
+| 2026-03-12 ~ 04-10 | 스폰서 워크숍 (온라인, 각 45분) | Near AI 워크숍 참석 권장 |
 | **2026-04-14** | **Builder Day** (오프라인) | 중간 점검 — 3주차 작업 완료 목표 |
 | **2026-04-17** | **제출 마감** 23:59 KST | Ludium Portal 제출 |
 | **2026-04-18** | **최종 피치 데이** | 심사 발표 |
@@ -111,7 +111,7 @@ near add-key chooncme-server.testnet \
 
 ## 4. 스마트 컨트랙트 설계 (`contracts/`)
 
-### 3.1 디렉토리 구조
+### 4.1 디렉토리 구조
 
 ```
 contracts/
@@ -121,7 +121,7 @@ contracts/
 └── tsconfig.json
 ```
 
-### 3.2 컨트랙트 인터페이스
+### 4.2 컨트랙트 인터페이스
 
 ```typescript
 // 봇 등록
@@ -151,7 +151,7 @@ getBot({ botId }: { botId: string }): BotRecord | null
 getMatchHistory({ botId }: { botId: string }): MatchRecord[]
 ```
 
-### 3.3 데이터 구조
+### 4.3 데이터 구조
 
 ```typescript
 interface BotRecord {
@@ -175,13 +175,13 @@ interface MatchRecord {
 
 ## 5. 서버 연동 (`server/src/services/nearService.ts`)
 
-### 4.1 역할
+### 5.1 역할
 
 - `near-api-js v7`로 테스트넷 컨트랙트 호출
 - `POST /sync` 완료 시 → `registerBot()` 호출
 - `POST /match/start` score ≥ 70 시 → `recordMatch()` 호출
 
-### 4.2 환경변수 추가
+### 5.2 환경변수 추가
 
 ```env
 # server/.env
@@ -191,7 +191,7 @@ NEAR_ACCOUNT_ID=chooncme-server.testnet       # 서버 서명 계정
 NEAR_PRIVATE_KEY=ed25519:...                  # FunctionCall 키 (제한된 권한)
 ```
 
-### 4.3 주요 함수
+### 5.3 주요 함수
 
 ```typescript
 // nearService.ts
