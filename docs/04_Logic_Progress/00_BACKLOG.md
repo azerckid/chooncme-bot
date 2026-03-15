@@ -7,7 +7,7 @@
 ## 현재 진행
 
 **v0.8-hackathon** — NEAR 연동 (BuidlHack 2026 Near AI 트랙, 마감: 2026-04-17)
-> 1주차 완료. 2주차 진행 중. 명세: [08_NEAR_HACKATHON_SPEC.md](../03_Technical_Specs/08_NEAR_HACKATHON_SPEC.md)
+> 1주차 완료. 2주차 완료. 3주차 진행 중. 명세: [08_NEAR_HACKATHON_SPEC.md](../03_Technical_Specs/08_NEAR_HACKATHON_SPEC.md)
 
 ---
 
@@ -141,12 +141,13 @@
 - [x] NEAR 테스트넷 배포 (`chooncme.testnet`) — Tx: BbTtiXaes7bWKGJCHFzACEQVFaQXtQMKzLZ7i5v4Gh9P
 - [x] FunctionCall 키 생성 (`chooncme-server.testnet` → `registerBot`, `recordMatch`만 허용)
 
-**2주차 (3/24~3/30) — 서버 연동**
-- [ ] `server/src/services/nearService.ts` — near-api-js v7 연동
-- [ ] `server/.env` — NEAR 환경변수 4개 추가
-- [ ] `POST /sync` → `registerBotOnChain()` 연결
-- [ ] `POST /match/start` score ≥ 70 → `recordMatchOnChain()` 연결
-- [ ] NEAR 미설정 시 silent skip 처리
+**2주차 (3/24~3/30) — 서버 연동** ✅ 완료
+- [x] `server/src/services/nearService.ts` — near-api-js v7 ESModule Function() 패턴으로 CJS 호환
+- [x] `server/.env` — NEAR 환경변수 4개 추가
+- [x] `POST /sync` → `registerBotOnChain()` 연결
+- [x] `POST /match/start` score ≥ 70 → `recordMatchOnChain()` 연결
+- [x] NEAR 미설정 시 silent skip 처리
+- [x] testnet 검증 완료 (registerBot, recordMatch 정상 호출)
 
 **3주차 (3/31~4/6) — 클라이언트 + 배포 + 통합 테스트** (4/14 Builder Day 전 완료 목표)
 - [ ] `src/config.ts` — `nearAccount?: string` 필드 추가
