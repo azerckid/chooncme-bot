@@ -1,6 +1,6 @@
 # Backlog
 > Created: 2026-03-11 03:00
-> Last Updated: 2026-03-15 (v0.4 완료)
+> Last Updated: 2026-03-16
 
 ---
 
@@ -129,6 +129,7 @@
 - [ ] 봇 자율 이동 (3~8초 간격, 랜덤 waypoint)
 - [ ] `isBot: true` 플래그 허브 서버/클라이언트 반영
 - [ ] MAX_ACTIVE_BOTS 제한 (기본 50)
+- [ ] (선택) 허브 클라이언트 봇 시각 구분 — 이름표 색상/아이콘 (명세 §5)
 
 ### v0.6 — 배포
 > 명세: [06_DEPLOYMENT_SPEC.md](../03_Technical_Specs/06_DEPLOYMENT_SPEC.md)

@@ -1,6 +1,6 @@
 # 배포 명세
 > Created: 2026-03-15
-> Last Updated: 2026-03-15
+> Last Updated: 2026-03-16
 
 ---
 
@@ -49,15 +49,32 @@ SMTP_HOST=smtp.gmail.com       # 이메일 알림 (선택)
 SMTP_PORT=587
 SMTP_USER=...
 SMTP_PASS=...
-HUB_PUBLIC_URL=https://chooncme.xyz  # 알림 이메일 본문에 삽입되는 허브 URL
+HUB_PUBLIC_URL=https://chooncme.xyz  # 알림 이메일 본문에 삽입되는 허브 URL (아래 상세)
+HUB_SERVER_URL=https://hub.chooncme.xyz  # v0.5 봇 자율 아바타가 접속할 허브 서버 WebSocket (아래 상세)
 ```
+
+**HUB_PUBLIC_URL** (알림용 허브 URL):
+
+| 항목 | 내용 |
+| :--- | :--- |
+| **용도** | 매칭 성사 시 주인에게 발송하는 이메일/콘솔 알림 본문에 들어가는 "허브 접속 링크". 수신자가 클릭해 3D 허브에 접속할 수 있도록 함. |
+| **미설정 시** | `http://localhost:3001` (로컬 개발용 기본값). `server/src/services/notificationService.ts`에서 사용. |
+| **배포 시 설정** | 실제 허브 클라이언트 공개 URL. 예: `https://chooncme.xyz` (Vercel 배포 도메인). |
+| **주의** | 프로토콜(`https://`) 포함, 끝에 슬래시 없이 설정. |
+
+**HUB_SERVER_URL** (v0.5 봇 자율 아바타용):
+
+| 항목 | 내용 |
+| :--- | :--- |
+| **용도** | 매칭 엔진 서버의 `botPresenceService`가 봇 아바타를 허브에 접속시킬 때 사용하는 허브 서버 WebSocket 주소. v0.5 구현 시 필요. |
+| **미설정 시** | `http://localhost:5050` (05_BOT_PRESENCE_SPEC §8). |
+| **배포 시 설정** | 허브 서버 공개 URL. 예: `https://hub.chooncme.xyz`. |
 
 ### 3.2 `chooncme-hub-server`
 
 ```env
 PORT=5050
-MATCH_ENGINE_URL=https://api.chooncme.xyz   # 매칭 엔진 주소
-HUB_SERVER_URL=https://hub.chooncme.xyz     # 자기 자신 (botPresence용)
+MATCH_ENGINE_URL=https://api.chooncme.xyz   # 매칭 엔진 주소 (join/leave, match 프록시)
 ```
 
 ### 3.3 `chooncme-hub-client`
@@ -123,7 +140,7 @@ Railway/Vercel에서 커스텀 도메인 설정:
 ### STEP 4: npm 패키지 배포 (`chooncme-bot`)
 
 ```bash
-cd /   # 루트 (src/ 포함)
+cd <프로젝트 루트>   # package.json + src/ 가 있는 디렉토리
 npm publish --access public
 ```
 
@@ -131,6 +148,8 @@ npm publish --access public
 ```bash
 npx chooncme-bot
 ```
+
+**환경변수 설정 가이드**: §3의 환경변수를 Railway/Vercel 대시보드에 설정한 뒤, 운영자용으로 "어떤 서비스에 어떤 변수를 넣는지" 요약한 가이드 문서(또는 RUNBOOK)를 별도 작성 권장. 본 명세 §3을 소스로 활용하면 됨.
 
 ---
 
