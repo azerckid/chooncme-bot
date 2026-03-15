@@ -88,21 +88,34 @@ async function main(): Promise<void> {
     output: process.stdout,
   });
 
+  // 종료 중복 실행 방지
+  let isExiting = false;
+
+  const shutdown = async (): Promise<void> => {
+    if (isExiting) return;
+    isExiting = true;
+
+    await farewell(agent);
+    await saveSessionMemory(agent, memory);
+    printFooter();
+    process.exit(0);
+  };
+
   const prompt = (): void => {
     rl.question('\n> ', async (input) => {
       const trimmed = input.trim();
 
+      // 빈 입력 — 그냥 다시 프롬프트
       if (!trimmed) {
         prompt();
         return;
       }
 
       if (trimmed.toLowerCase() === 'exit') {
+        rl.removeAllListeners('close'); // close 이벤트 중복 방지
         rl.close();
-        await farewell(agent);
-        await saveSessionMemory(agent, memory);
-        printFooter();
-        process.exit(0);
+        await shutdown();
+        return;
       }
 
       try {
@@ -115,7 +128,11 @@ async function main(): Promise<void> {
         printChunsimStreamEnd(fullText);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
-        printError(`API 호출 실패: ${msg}`);
+        if (msg.includes('ENOTFOUND') || msg.includes('ECONNREFUSED') || msg.includes('network')) {
+          printError('네트워크 연결을 확인해주세요. 다시 시도하려면 메시지를 입력하세요.');
+        } else {
+          printError(`API 호출 실패: ${msg}`);
+        }
       }
 
       prompt();
@@ -124,10 +141,7 @@ async function main(): Promise<void> {
 
   // Ctrl+C 처리
   rl.on('close', async () => {
-    await farewell(agent);
-    await saveSessionMemory(agent, memory);
-    printFooter();
-    process.exit(0);
+    await shutdown();
   });
 
   process.on('SIGINT', () => {
