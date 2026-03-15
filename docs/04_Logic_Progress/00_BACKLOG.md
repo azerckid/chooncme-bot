@@ -1,37 +1,37 @@
 # Backlog
 > Created: 2026-03-11 03:00
-> Last Updated: 2026-03-15
+> Last Updated: 2026-03-15 (v0.1 완료)
 
 ---
 
 ## 현재 진행
 
-없음. 구현 시작 대기 중.
+없음. v0.1 완료. v0.2 기획 대기 중.
 
 ---
 
-## 예정 작업 — MVP v0.1
+## ✅ 완료 — MVP v0.1 (2026-03-15)
 
 ### 환경 세팅
-- [ ] Node.js + TypeScript 프로젝트 초기화
-- [ ] Anthropic SDK 설치
-- [ ] tsconfig 설정
-- [ ] package.json bin 설정 (npx 실행)
+- [x] Node.js + TypeScript 프로젝트 초기화
+- [x] Anthropic SDK 설치
+- [x] tsconfig 설정
+- [x] package.json bin 설정 (npx 실행)
 
 ### 핵심 구현
-- [ ] `persona.ts` — 춘심톡 CORE_CHUNSIM_PERSONA 이식
-- [ ] `agent.ts` — Claude API 연결, 대화 히스토리 관리
-- [ ] `memory.ts` — 세션 요약 저장/로드, System Prompt 주입 (`~/.chooncme/memory.json`). 저장 필드는 [User Pattern Collection](../01_Concept_Design/04_USER_PATTERN_COLLECTION.md) §3.1(v0.1 수집 항목)과 정합성 유지
-- [ ] `display.ts` — 터미널 출력 포맷 (춘심 이름 표시 등)
-- [ ] `index.ts` — readline 루프, 진입점
+- [x] `persona.ts` — 춘심톡 CORE_CHUNSIM_PERSONA 이식
+- [x] `agent.ts` — Claude API 연결, 대화 히스토리 관리
+- [x] `memory.ts` — 세션 요약 저장/로드, System Prompt 주입 (`~/.chooncme/memory.json`)
+- [x] `display.ts` — 터미널 출력 포맷 (춘심 이름 표시 등)
+- [x] `index.ts` — readline 루프, 진입점
 
-### 완료 기준 (DoD)
-- [ ] `npx chooncme-bot` 으로 실행
-- [ ] 춘심이와 터미널에서 대화 가능
-- [ ] 세션 내 대화 맥락 유지
-- [ ] **재실행 후에도 이전 대화 기억 (AI Memory)**
-- [ ] exit / Ctrl+C 로 종료
-- [ ] QA 체크리스트 전항목 통과 → `05_QA_Validation/01_MVP_TEST_CHECKLIST.md`
+### 완료 기준 (DoD) — 전항목 통과
+- [x] `npx chooncme-bot` 으로 실행
+- [x] 춘심이와 터미널에서 대화 가능
+- [x] 세션 내 대화 맥락 유지
+- [x] 재실행 후에도 이전 대화 기억 (AI Memory)
+- [x] exit / Ctrl+C 로 종료
+- [x] QA 체크리스트 전항목 통과
 
 ---
 
@@ -55,7 +55,7 @@
 
 ## 완료
 
-없음.
+- **v0.1 MVP** — 2026-03-15. 위 항목 참고.
 
 ---
 
