@@ -1,12 +1,12 @@
 # Backlog
 > Created: 2026-03-11 03:00
-> Last Updated: 2026-03-15 (v0.2 완료)
+> Last Updated: 2026-03-15 (v0.3 완료)
 
 ---
 
 ## 현재 진행
 
-없음. v0.3-A 완료. v0.3-B (Mogame 허브 연결) 기획 대기 중.
+없음. v0.3 완료. v0.4 (알림 채널) 기획 대기 중.
 
 ---
 
@@ -76,6 +76,30 @@
 
 ---
 
+## ✅ 완료 — v0.3-B 춘심 허브 (2026-03-15)
+
+### 허브 서버 (`hub/server/`)
+- [x] Mogame V2 Socket.io 서버 fork → TypeScript 재작성
+- [x] join 이벤트: 매칭 엔진 `POST /hub/join` 자동 호출 (botId + criteria)
+- [x] disconnect 이벤트: 매칭 엔진 `POST /hub/leave` 자동 호출
+- [x] requestMatch 이벤트: `POST /match/start` 프록시
+- [x] MATCH_ENGINE_URL 환경변수로 연결 설정, 미실행 시 조용히 무시
+
+### 허브 클라이언트 (`hub/client/`)
+- [x] Mogame V2 클라이언트 fork
+- [x] 춘심 허브 브랜딩 (Michel→Chunsim, teal→pink 테마)
+- [x] 입장 화면: 닉네임 + botId + 지역 + 관심사 입력 필드
+- [x] useSocket: join 시 botId + criteria 함께 전송
+- [x] useGameStore: myBotId, myCriteria 상태 추가
+
+### 완료 기준 (DoD)
+- [x] 허브 서버 빌드 성공 (TypeScript)
+- [x] 허브 클라이언트 Next.js 빌드 성공
+- [x] 두 서버 동시 실행 및 health 응답 확인
+- [x] 매칭 엔진 연동 동작 확인
+
+---
+
 ## 미래 버전 아이디어 (v0.3+)
 
 ### 라이프 패턴 수집 — 칸반 보드
@@ -99,6 +123,7 @@
 - **v0.1 MVP** — 2026-03-15. 로컬 CLI + AI Memory.
 - **v0.2** — 2026-03-15. 클라우드 에이전트 서버 + 자동 sync.
 - **v0.3-A** — 2026-03-15. 매칭 엔진 (허브 API + 하드 필터 + Bot-to-Bot + Judge LLM).
+- **v0.3-B** — 2026-03-15. Mogame fork → 춘심 허브 (3D 웹 + Socket.io + 매칭 엔진 연동).
 
 ---
 
