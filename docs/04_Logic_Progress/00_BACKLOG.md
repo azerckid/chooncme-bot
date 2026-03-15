@@ -1,6 +1,6 @@
 # Backlog
 > Created: 2026-03-11 03:00
-> Last Updated: 2026-03-14
+> Last Updated: 2026-03-15
 
 ---
 
@@ -21,14 +21,17 @@
 ### 핵심 구현
 - [ ] `persona.ts` — 춘심톡 CORE_CHUNSIM_PERSONA 이식
 - [ ] `agent.ts` — Claude API 연결, 대화 히스토리 관리
+- [ ] `memory.ts` — 세션 요약 저장/로드, System Prompt 주입 (`~/.chooncme/memory.json`)
 - [ ] `display.ts` — 터미널 출력 포맷 (춘심 이름 표시 등)
 - [ ] `index.ts` — readline 루프, 진입점
 
-### 완료 기준
+### 완료 기준 (DoD)
 - [ ] `npx chooncme-bot` 으로 실행
 - [ ] 춘심이와 터미널에서 대화 가능
 - [ ] 세션 내 대화 맥락 유지
+- [ ] **재실행 후에도 이전 대화 기억 (AI Memory)**
 - [ ] exit / Ctrl+C 로 종료
+- [ ] QA 체크리스트 전항목 통과 → `05_QA_Validation/01_MVP_TEST_CHECKLIST.md`
 
 ---
 
@@ -59,4 +62,6 @@
 ## Related Documents
 
 - **Technical_Specs**: [CLI 기술 명세](../03_Technical_Specs/01_CLI_SPEC.md) - 구현 명세
+- **Technical_Specs**: [Bot-to-Bot 명세](../03_Technical_Specs/04_BOT_TO_BOT_SPEC.md) - v0.3 봇 간 상호작용
+- **QA_Validation**: [MVP 테스트 체크리스트](../05_QA_Validation/01_MVP_TEST_CHECKLIST.md) - DoD 검증
 - **Concept_Design**: [Roadmap](../01_Concept_Design/02_ROADMAP.md) - 전체 로드맵
