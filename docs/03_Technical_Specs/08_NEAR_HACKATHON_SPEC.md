@@ -175,10 +175,33 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
   서버 → registerBot({ botId: uuid, ownerAccount: "fan123.near", ... })
 ```
 
+### UX 구조 확정: 서명 없는 텍스트 입력 (소유권 주장 방식)
+
+`.near` 계정 입력은 **지갑 앱 연동이나 서명(Signature) 과정 없이 단순 텍스트 스트링만 입력받는다.**
+
+```
+팬이 입력: "fan123.near"  ← 텍스트 입력만
+                ↓
+서버가 대납 서명: chooncme-server.testnet 키로 트랜잭션 서명
+                ↓
+온체인 기록: "botId X의 주인이 fan123.near라고 주장한다 (claim)"
+```
+
+| 항목 | 내용 |
+| :--- | :--- |
+| **입력 방식** | CLI 텍스트 입력 (지갑 앱 불필요) |
+| **서명 주체** | 서버 (`chooncme-server.testnet`) — 팬이 서명하지 않음 |
+| **온체인 의미** | 소유권 주장 (claim), 소유권 암호학적 증명 (proof)이 아님 |
+| **UX 충돌** | 없음 — 팬은 지갑 설치/시드 구문 불필요 |
+| **한계** | 타인의 .near 계정명을 입력해도 막을 수 없음 (해커톤 범위에서는 허용) |
+| **개선 시점** | v0.9+ — 팬이 직접 지갑 서명으로 소유권 증명 (proof) 방식으로 전환 |
+
+> 해커톤 데모에서는 "투명한 온체인 기록"의 가치를 보여주는 것이 목적이므로 claim 방식으로 충분하다.
+
 ### 클라이언트 변경 최소화
 
 - `src/config.ts`: `nearAccount?: string` 필드 추가
-- `src/index.ts`: 최초 실행 시 `.near` 계정 입력 프롬프트 (건너뛰기 가능)
+- `src/index.ts`: 최초 실행 시 `.near` 계정 입력 프롬프트 (건너뛰기 가능, 텍스트 입력만)
 - `src/memory.ts`: `syncToServer`에 `nearAccount` 전달
 
 ---
@@ -243,6 +266,8 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 | 테스트넷 안정성 | 테스트넷 장애 시 nearService 자동 skip, 기존 기능 영향 없음 |
 | 팬이 .near 계정 없을 경우 | nearAccount 없이도 UUID로 동작 (온보딩 마찰 없음) |
 | 컨트랙트 스토리지 비용 | 테스트넷 NEAR 무료 충전 (faucet) |
+| **서버 가스비 고갈** | 테스트넷 Faucet 200 NEAR 지급 / 트랜잭션 1회 ~0.001 NEAR / 데모 스케일(수백 회)에서는 고갈 불가. 잔액 확인: `near state chooncme-server.testnet` (NEAR CLI). 해커톤 기간 내 수동 관리로 충분. |
+| `.near` 계정 소유권 미검증 | 타인 계정명 입력 가능 (claim 방식 한계). 해커톤 범위에서는 허용. v0.9+에서 지갑 서명 방식으로 전환 예정. |
 
 ---
 
