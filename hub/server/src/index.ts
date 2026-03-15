@@ -81,11 +81,18 @@ app.post("/near-event", (req, res) => {
     summary?: string;
   };
 
+  const { badges, badgesA, badgesB } = req.body as {
+    badges?: { id: string; label: string; color: string; emoji: string }[];
+    badgesA?: { id: string; label: string; color: string; emoji: string }[];
+    badgesB?: { id: string; label: string; color: string; emoji: string }[];
+  };
+
   if (type === "botRegistered" && botId) {
-    // botId에 해당하는 socketId 탐색
+    if (badges) botBadges[botId] = badges;
     const targetSocket = Object.values(users).find(u => u.botId === botId);
     const message = `춘심봇이 NEAR 기억은행에 등록되었습니다`;
     io.emit("nearAnnouncement", { type, botId, message });
+    io.emit("badgeUpdate", { botId, badges: badges ?? [] });
     if (targetSocket) {
       io.emit("walkToBank", { socketId: targetSocket.id, botId });
     }
@@ -93,10 +100,14 @@ app.post("/near-event", (req, res) => {
   }
 
   if (type === "matchRecorded" && botAId && botBId) {
+    if (badgesA) botBadges[botAId] = badgesA;
+    if (badgesB) botBadges[botBId] = badgesB;
     const socketA = Object.values(users).find(u => u.botId === botAId);
     const socketB = Object.values(users).find(u => u.botId === botBId);
     const message = `매칭 기록이 NEAR에 저장되었습니다 (score: ${score})`;
     io.emit("nearAnnouncement", { type, botAId, botBId, score, summary, message });
+    io.emit("badgeUpdate", { botId: botAId, badges: badgesA ?? [] });
+    io.emit("badgeUpdate", { botId: botBId, badges: badgesB ?? [] });
     if (socketA) io.emit("walkToBank", { socketId: socketA.id, botId: botAId });
     if (socketB) io.emit("walkToBank", { socketId: socketB.id, botId: botBId });
     console.log(`[hub] NEAR 이벤트: matchRecorded ${botAId} <> ${botBId} score=${score}`);
@@ -114,6 +125,9 @@ const io = new Server(server, {
 });
 
 const users: Record<string, User> = {};
+
+// botId별 뱃지 보관
+const botBadges: Record<string, { id: string; label: string; color: string; emoji: string }[]> = {};
 
 io.on("connection", (socket) => {
   console.log(`[hub] 클라이언트 연결: ${socket.id}`);

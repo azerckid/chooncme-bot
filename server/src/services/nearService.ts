@@ -8,6 +8,7 @@
 
 import { AgentProfile } from "../types";
 import { MatchResult } from "../store/matchStore";
+import { getBadges } from "./badgeService";
 
 const {
   NEAR_NETWORK = "testnet",
@@ -63,7 +64,11 @@ export async function registerBotOnChain(profile: AgentProfile): Promise<void> {
       deposit: BigInt(0),
     });
     console.log(`[NEAR] registerBot: ${profile.botId}`);
-    await notifyHub({ type: "botRegistered", botId: profile.botId });
+    await notifyHub({
+      type: "botRegistered",
+      botId: profile.botId,
+      badges: getBadges(profile.botId),
+    });
   } catch (err) {
     console.error(`[NEAR] registerBot 실패 (skip):`, err);
   }
@@ -93,6 +98,8 @@ export async function recordMatchOnChain(result: MatchResult): Promise<void> {
       botBId: result.bot_b_id,
       score: result.score,
       summary: result.summary,
+      badgesA: getBadges(result.bot_a_id),
+      badgesB: getBadges(result.bot_b_id),
     });
   } catch (err) {
     console.error(`[NEAR] recordMatch 실패 (skip):`, err);

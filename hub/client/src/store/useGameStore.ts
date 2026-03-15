@@ -21,8 +21,9 @@ interface LightingSettings {
 export interface OtherPlayer {
   id: string;
   position: PlayerPosition;
-  action?: string; // 다른 플레이어의 애니메이션 상태 (Run, Idle 등)
+  action?: string;
   nickname?: string;
+  botId?: string;
 }
 
 interface GameState {
@@ -50,9 +51,12 @@ interface GameState {
   myCriteria: { region?: string; interests?: string[] };
 
   // NEAR 이벤트 상태
-  nearAnnouncement: string | null;       // 공지 배너 메시지
-  bankGlowing: boolean;                  // 뱅크 글로우 활성화 여부
-  walkingToBankBotIds: string[];         // 현재 뱅크로 이동 중인 botId 목록
+  nearAnnouncement: string | null;
+  bankGlowing: boolean;
+  walkingToBankBotIds: string[];
+
+  // 뱃지 상태 — botId → Badge[]
+  botBadges: Record<string, { id: string; label: string; color: string; emoji: string }[]>;
 
   // Actions
   setKeyPressed: (keys: Record<string, boolean>) => void;
@@ -69,13 +73,14 @@ interface GameState {
   setMyNickname: (nickname: string) => void;
   setMyBotId: (botId: string) => void;
   setMyCriteria: (criteria: { region?: string; interests?: string[] }) => void;
-  updateOtherPlayerPosition: (id: string, position: PlayerPosition, action?: string, nickname?: string) => void;
+  updateOtherPlayerPosition: (id: string, position: PlayerPosition, action?: string, nickname?: string, botId?: string) => void;
   removeOtherPlayer: (id: string) => void;
 
   // NEAR 이벤트 액션
   setNearAnnouncement: (message: string | null) => void;
   setBankGlowing: (glowing: boolean) => void;
   setWalkingToBankBotIds: (botIds: string[]) => void;
+  setBotBadges: (botId: string, badges: { id: string; label: string; color: string; emoji: string }[]) => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -107,6 +112,7 @@ export const useGameStore = create<GameState>()(
     nearAnnouncement: null,
     bankGlowing: false,
     walkingToBankBotIds: [],
+    botBadges: {},
 
     setKeyPressed: (keys) => {
       // 키보드 입력이 발생하면 자동 이동 취소
@@ -131,15 +137,16 @@ export const useGameStore = create<GameState>()(
     setMyNickname: (nickname) => set({ myNickname: nickname }),
     setMyBotId: (botId) => set({ myBotId: botId }),
     setMyCriteria: (criteria) => set({ myCriteria: criteria }),
-    updateOtherPlayerPosition: (id, position, action = "Idle", nickname) => set((state) => ({
+    updateOtherPlayerPosition: (id, position, action = "Idle", nickname, botId) => set((state) => ({
       otherPlayers: {
         ...state.otherPlayers,
         [id]: {
           ...state.otherPlayers[id],
-          id, // ensure id exists if creating new
+          id,
           position,
           action: action || state.otherPlayers[id]?.action,
-          nickname: nickname || state.otherPlayers[id]?.nickname
+          nickname: nickname || state.otherPlayers[id]?.nickname,
+          botId: botId || state.otherPlayers[id]?.botId,
         }
       }
     })),
@@ -152,5 +159,8 @@ export const useGameStore = create<GameState>()(
     setNearAnnouncement: (message) => set({ nearAnnouncement: message }),
     setBankGlowing: (glowing) => set({ bankGlowing: glowing }),
     setWalkingToBankBotIds: (botIds) => set({ walkingToBankBotIds: botIds }),
+    setBotBadges: (botId, badges) => set((state) => ({
+      botBadges: { ...state.botBadges, [botId]: badges }
+    })),
   }))
 );

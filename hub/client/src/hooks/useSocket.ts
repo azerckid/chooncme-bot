@@ -18,6 +18,7 @@ export function useSocket() {
     const setWalkingToBankBotIds = useGameStore((state) => state.setWalkingToBankBotIds);
     const setTargetPosition = useGameStore((state) => state.setTargetPosition);
     const setIsAutoMoving = useGameStore((state) => state.setIsAutoMoving);
+    const setBotBadges = useGameStore((state) => state.setBotBadges);
 
     // 1. 소켓 연결 및 초기화
     useEffect(() => {
@@ -53,8 +54,7 @@ export function useSocket() {
         // 서버 코드 기준: playerJoined 이벤트 (새로운 유저 입장)
         const onPlayerJoined = (user: any) => {
             console.log("Player Joined:", user);
-            // user 객체에는 id, position, nickname이 포함됨
-            updateOtherPlayerPosition(user.id, user.position, user.action, user.nickname);
+            updateOtherPlayerPosition(user.id, user.position, user.action, user.nickname, user.botId);
         };
 
         // 서버 코드 기준: playerMoved 이벤트
@@ -91,6 +91,11 @@ export function useSocket() {
             setTimeout(() => setWalkingToBankBotIds([]), 4000);
         };
 
+        // NEAR 이벤트: 뱃지 업데이트
+        const onBadgeUpdate = (data: { botId: string; badges: { id: string; label: string; color: string; emoji: string }[] }) => {
+            setBotBadges(data.botId, data.badges);
+        };
+
         // 리스너 등록
         socket.on("connect", onConnect);
         socket.on("connect_error", onConnectError);
@@ -100,6 +105,7 @@ export function useSocket() {
         socket.on("playerLeft", onPlayerLeft);
         socket.on("nearAnnouncement", onNearAnnouncement);
         socket.on("walkToBank", onWalkToBank);
+        socket.on("badgeUpdate", onBadgeUpdate);
 
         // 연결 시도 (리스너 등록 후)
         if (!socket.connected) {
@@ -120,8 +126,9 @@ export function useSocket() {
             socket.off("playerLeft", onPlayerLeft);
             socket.off("nearAnnouncement", onNearAnnouncement);
             socket.off("walkToBank", onWalkToBank);
+            socket.off("badgeUpdate", onBadgeUpdate);
         };
-    }, [isStarted, myNickname, myBotId, myCriteria, setOtherPlayers, updateOtherPlayerPosition, removeOtherPlayer, setNearAnnouncement, setBankGlowing, setWalkingToBankBotIds, setTargetPosition, setIsAutoMoving]);
+    }, [isStarted, myNickname, myBotId, myCriteria, setOtherPlayers, updateOtherPlayerPosition, removeOtherPlayer, setNearAnnouncement, setBankGlowing, setWalkingToBankBotIds, setTargetPosition, setIsAutoMoving, setBotBadges]);
 
     // 2. 내 위치 전송 (Throttling 적용: 50ms)
     const lastEmitTime = useRef<number>(0);

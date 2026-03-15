@@ -5,15 +5,19 @@ import { useFrame } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Chunsim } from "./Chunsim";
+import { useGameStore } from "@/store/useGameStore";
 
 interface OtherPlayerProps {
     id: string;
     position: { x: number; y: number; z: number };
     action?: string;
     nickname?: string;
+    botId?: string;
 }
 
-export function OtherPlayer({ id, position, action = "Idle", nickname }: OtherPlayerProps) {
+export function OtherPlayer({ id, position, action = "Idle", nickname, botId }: OtherPlayerProps) {
+    const botBadges = useGameStore((state) => state.botBadges);
+    const badges = botId ? (botBadges[botId] ?? []) : [];
     const groupRef = useRef<THREE.Group>(null);
     const [currentAction, setCurrentAction] = useState(action);
     const actionRef = useRef(action); // useFrame 내 비교를 위한 Ref
@@ -73,9 +77,23 @@ export function OtherPlayer({ id, position, action = "Idle", nickname }: OtherPl
         <group ref={groupRef}>
             <Chunsim action={currentAction} />
 
-            {/* 닉네임 / ID 표시 */}
-            <Html distanceFactor={12} position={[0, 2.2, 0]} center>
+            {/* 닉네임 + 뱃지 표시 */}
+            <Html distanceFactor={12} position={[0, 2.4, 0]} center>
                 <div className="flex flex-col items-center gap-1">
+                    {badges.length > 0 && (
+                        <div className="flex gap-1">
+                            {badges.map((b) => (
+                                <div
+                                    key={b.id}
+                                    className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black shadow-lg"
+                                    style={{ backgroundColor: b.color + "33", border: `1px solid ${b.color}`, color: b.color }}
+                                    title={b.label}
+                                >
+                                    {b.emoji}
+                                </div>
+                            ))}
+                        </div>
+                    )}
                     <div className="px-2 py-1 bg-black/60 text-white/90 backdrop-blur-md rounded-md text-[10px] font-bold font-mono border border-white/10 shadow-lg whitespace-nowrap">
                         {nickname || id.slice(0, 5)}
                     </div>

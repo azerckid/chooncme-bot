@@ -25,7 +25,10 @@ export function Player({ nickname }: PlayerProps) {
     const playerPosition = useGameStore((state) => state.playerPosition);
     const action = useGameStore((state) => state.action);
     const setAction = useGameStore((state) => state.setAction);
-    const isAutoMoving = useGameStore((state) => state.isAutoMoving); // 자동 이동 상태 구독
+    const isAutoMoving = useGameStore((state) => state.isAutoMoving);
+    const myBotId = useGameStore((state) => state.myBotId);
+    const botBadges = useGameStore((state) => state.botBadges);
+    const myBadges = myBotId ? (botBadges[myBotId] ?? []) : []; // 자동 이동 상태 구독
 
     // Physics body (currently purely for collision if needed, but movement is manual in original)
     const [refCannon] = useBox(() => ({
@@ -58,9 +61,25 @@ export function Player({ nickname }: PlayerProps) {
         <>
             <group ref={modelRef}>
                 <Chunsim action={action} />
-                <Html distanceFactor={10} position={[0, 2, 0]} center>
-                    <div className="px-3 py-1 bg-teal-500/80 text-white rounded-lg text-sm font-bold backdrop-blur-sm border border-white/20 whitespace-nowrap shadow-xl">
-                        {nickname || "Guest"}
+                <Html distanceFactor={10} position={[0, 2.2, 0]} center>
+                    <div className="flex flex-col items-center gap-1">
+                        {myBadges.length > 0 && (
+                            <div className="flex gap-1">
+                                {myBadges.map((b) => (
+                                    <div
+                                        key={b.id}
+                                        className="w-5 h-5 rounded-full flex items-center justify-center text-[9px] font-black shadow-lg"
+                                        style={{ backgroundColor: b.color + "33", border: `1px solid ${b.color}`, color: b.color }}
+                                        title={b.label}
+                                    >
+                                        {b.emoji}
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                        <div className="px-3 py-1 bg-teal-500/80 text-white rounded-lg text-sm font-bold backdrop-blur-sm border border-white/20 whitespace-nowrap shadow-xl">
+                            {nickname || "Guest"}
+                        </div>
                     </div>
                 </Html>
             </group>
