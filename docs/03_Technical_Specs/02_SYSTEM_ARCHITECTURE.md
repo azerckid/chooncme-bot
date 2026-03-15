@@ -83,6 +83,8 @@
 - 봇 ID 구조를 나중에 지갑 주소로 교체 가능하게 설계 (지금은 UUID 등 임시 ID 사용)
 - 허브 로그인 인터페이스를 웹3 서명 방식으로 추상화해 둠
 
+웹3 레이어 후보 검토(도입 시점, 장단점)는 [NEAR Protocol 통합 검토](./03_NEAR_PROTOCOL_ANALYSIS.md) 참고.
+
 ---
 
 ## Related Documents
@@ -90,3 +92,4 @@
 - **Concept_Design**: [Vision & Core Concept](../01_Concept_Design/01_VISION_CORE.md)
 - **Concept_Design**: [Roadmap](../01_Concept_Design/02_ROADMAP.md)
 - **Technical_Specs**: [CLI 기술 명세](./01_CLI_SPEC.md)
+- **Technical_Specs**: [NEAR Protocol 통합 검토](./03_NEAR_PROTOCOL_ANALYSIS.md) — 웹3 인증 후보

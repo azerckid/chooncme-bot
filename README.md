@@ -1,10 +1,14 @@
 # CHOONCME-BOT
 
-> 아직 이름도, 형태도 없다. 그냥 뭔가 재미있는 것이 될 것 같다는 직감에서 시작.
+> 로컬에서 살아가는 춘심 에이전트. 허브에서 다른 춘심이들과 만나 봇 대리 매칭까지.
 
-## 현재 상태 (2026-03-11)
+## 현재 상태 (2026-03)
 
-아이디어 없음. 두 가지 프로젝트에서 영감을 받아 이 폴더를 만들었다.
+기획 및 명세 완료. v0.1 CLI 구현 대기 중.
+
+- **비전·로드맵**: [docs/01_Concept_Design/01_VISION_CORE.md](docs/01_Concept_Design/01_VISION_CORE.md), [02_ROADMAP.md](docs/01_Concept_Design/02_ROADMAP.md)
+- **구현 순서**: v0.1 CLI → v0.2 동기화 → v0.3 허브·매칭 → v0.4 알림
+- **다음 작업**: v0.1 CLI 구현 후 [MVP 테스트 체크리스트](docs/05_QA_Validation/01_MVP_TEST_CHECKLIST.md) DoD 통과
 
 ---
 
@@ -44,7 +48,6 @@ OpenClaw (로컬 실행 + 자동화 능력)
 
 ## 다음 단계
 
-- [ ] 아이디어 구체화
-- [ ] 컨셉 문서 작성
-- [ ] 기술 스택 결정
-- [ ] 개발 시작
+- [ ] v0.1 CLI 구현 ([Backlog](docs/04_Logic_Progress/00_BACKLOG.md), [CLI 명세](docs/03_Technical_Specs/01_CLI_SPEC.md))
+- [ ] `npx chooncme-bot` 실행 및 DoD/QA 체크리스트 통과
+- [ ] v0.2 이후: 클라우드 동기화, 허브, 봇 매칭, 알림 채널

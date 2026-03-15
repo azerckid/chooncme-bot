@@ -120,6 +120,8 @@ chooncme-bot/
 핵심 비전인 "나를 아는 존재"를 MVP 단계에서 최소한으로 검증하기 위한 맥락 연속성 기능.
 Vector DB 없이 로컬 JSON 파일과 Claude API 요약만으로 구현한다.
 
+v0.1에서 수집·저장하는 데이터 범위는 [User Pattern Collection](../01_Concept_Design/04_USER_PATTERN_COLLECTION.md) §3.1(v0.1 CLI에서 즉시 가능한 것)과 정합성을 유지한다. 저장 형식은 본 절의 `memory.json` 스키마를 따른다.
+
 ### 저장 구조 (`~/.chooncme/memory.json`)
 
 ```json

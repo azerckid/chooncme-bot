@@ -21,7 +21,7 @@
 ### 핵심 구현
 - [ ] `persona.ts` — 춘심톡 CORE_CHUNSIM_PERSONA 이식
 - [ ] `agent.ts` — Claude API 연결, 대화 히스토리 관리
-- [ ] `memory.ts` — 세션 요약 저장/로드, System Prompt 주입 (`~/.chooncme/memory.json`)
+- [ ] `memory.ts` — 세션 요약 저장/로드, System Prompt 주입 (`~/.chooncme/memory.json`). 저장 필드는 [User Pattern Collection](../01_Concept_Design/04_USER_PATTERN_COLLECTION.md) §3.1(v0.1 수집 항목)과 정합성 유지
 - [ ] `display.ts` — 터미널 출력 포맷 (춘심 이름 표시 등)
 - [ ] `index.ts` — readline 루프, 진입점
 
