@@ -1,6 +1,6 @@
 # Backlog
 > Created: 2026-03-11 03:00
-> Last Updated: 2026-03-16
+> Last Updated: 2026-03-16 (v0.8-hackathon 순서 앞당김)
 
 ---
 
@@ -121,7 +121,42 @@
 
 ## 다음 구현 예정 (명세 완료)
 
-### v0.5 — 봇 자율 아바타
+> **순서 변경**: BuidlHack 2026 Near AI 트랙 (제출 마감 2026-04-17) 참가를 위해
+> v0.8-hackathon(NEAR 연동)을 v0.5~v0.7 앞에 먼저 진행한다.
+> 명세: [08_NEAR_HACKATHON_SPEC.md](../03_Technical_Specs/08_NEAR_HACKATHON_SPEC.md)
+
+### v0.8-hackathon — NEAR 연동 (BuidlHack 2026)
+> 명세: [08_NEAR_HACKATHON_SPEC.md](../03_Technical_Specs/08_NEAR_HACKATHON_SPEC.md)
+> 기간: 2026-03-17 ~ 2026-04-17
+
+**1주차 (3/17~3/23) — 스마트 컨트랙트**
+- [ ] `contracts/` 디렉토리 초기화 (near-sdk-js v2.0)
+- [ ] `registerBot()` — 봇 등록 컨트랙트 메서드
+- [ ] `recordMatch()` — 매칭 결과 기록 컨트랙트 메서드
+- [ ] `getBot()`, `getMatchHistory()` — 조회 메서드
+- [ ] NEAR 테스트넷 배포 (`chooncme.testnet`)
+
+**2주차 (3/24~3/30) — 서버 연동**
+- [ ] `server/src/services/nearService.ts` — near-api-js v7 연동
+- [ ] `server/.env` — NEAR 환경변수 4개 추가
+- [ ] `POST /sync` → `registerBotOnChain()` 연결
+- [ ] `POST /match/start` score ≥ 70 → `recordMatchOnChain()` 연결
+- [ ] NEAR 미설정 시 silent skip 처리
+
+**3주차 (3/31~4/6) — 클라이언트 + 통합 테스트**
+- [ ] `src/config.ts` — `nearAccount?: string` 필드 추가
+- [ ] `src/index.ts` — 최초 실행 시 `.near` 계정 입력 프롬프트 (건너뛰기 가능)
+- [ ] `src/memory.ts` — `syncToServer`에 `nearAccount` 전달
+- [ ] NEAR Explorer에서 트랜잭션 조회 확인 (DoD)
+
+**4주차 (4/7~4/17) — 데모 + 제출**
+- [ ] 데모 시나리오 전체 1회 완주
+- [ ] 피치 자료 준비
+- [ ] Ludium Portal 제출 (마감: 2026-04-17 23:59 KST)
+
+---
+
+### v0.5 — 봇 자율 아바타 (v0.8-hackathon 이후)
 > 명세: [05_BOT_PRESENCE_SPEC.md](../03_Technical_Specs/05_BOT_PRESENCE_SPEC.md)
 
 - [ ] `server/src/services/botPresenceService.ts` — socket.io-client로 허브 자동 접속
@@ -131,7 +166,7 @@
 - [ ] MAX_ACTIVE_BOTS 제한 (기본 50)
 - [ ] (선택) 허브 클라이언트 봇 시각 구분 — 이름표 색상/아이콘 (명세 §5)
 
-### v0.6 — 배포
+### v0.6 — 배포 (v0.8-hackathon 이후)
 > 명세: [06_DEPLOYMENT_SPEC.md](../03_Technical_Specs/06_DEPLOYMENT_SPEC.md)
 
 - [ ] Railway — `chooncme-server` (매칭 엔진) 배포
@@ -141,7 +176,7 @@
 - [ ] 도메인 + CORS 설정
 - [ ] 환경변수 설정 가이드 작성
 
-### v0.7 — 데스크탑 트레이 앱 (Electron)
+### v0.7 — 데스크탑 트레이 앱 (Electron) (v0.8-hackathon 이후)
 > 명세: [07_DESKTOP_APP_SPEC.md](../03_Technical_Specs/07_DESKTOP_APP_SPEC.md)
 
 - [ ] Electron 프로젝트 초기화 (`desktop/`)
