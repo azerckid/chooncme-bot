@@ -7,6 +7,8 @@ import * as dotenv from 'dotenv';
 import * as path from 'path';
 import syncRouter from './routes/sync';
 import agentRouter from './routes/agent';
+import hubRouter from './routes/hub';
+import matchRouter from './routes/match';
 
 // 여러 경로를 순서대로 시도 (실행 위치와 무관하게 안정적으로 로드)
 const envPaths = [
@@ -27,12 +29,14 @@ app.use(express.json());
 
 // 헬스체크
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, version: '0.2.0' });
+  res.json({ ok: true, version: '0.3.0' });
 });
 
 // 라우터
 app.use('/sync', syncRouter);
 app.use('/agent', agentRouter);
+app.use('/hub', hubRouter);
+app.use('/match', matchRouter);
 
 app.listen(PORT, () => {
   console.log(`[server] 춘심 클라우드 에이전트 서버 실행 중 — http://localhost:${PORT}`);
