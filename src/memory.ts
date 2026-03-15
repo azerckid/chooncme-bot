@@ -111,7 +111,8 @@ ${conversationText}`,
     });
 
     const text = response.content[0].type === 'text' ? response.content[0].text : '';
-    const parsed = JSON.parse(text.trim());
+    const cleaned = text.trim().replace(/^```json\s*/i, '').replace(/^```\s*/i, '').replace(/```\s*$/i, '');
+    const parsed = JSON.parse(cleaned);
 
     const today = new Date().toISOString().split('T')[0];
     const newSession: SessionSummary = {
