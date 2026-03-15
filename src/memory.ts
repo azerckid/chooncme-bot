@@ -191,6 +191,7 @@ export async function syncToServer(
   memory: Memory,
   serverUrl: string,
   ownerEmail?: string,
+  nearAccount?: string,
 ): Promise<void> {
   const body = JSON.stringify({
     botId,
@@ -198,6 +199,7 @@ export async function syncToServer(
     known_facts: memory.known_facts,
     sessions: memory.sessions,
     ...(ownerEmail ? { owner_email: ownerEmail } : {}),
+    ...(nearAccount ? { nearAccount } : {}),
   });
 
   return new Promise((resolve) => {

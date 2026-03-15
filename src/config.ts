@@ -12,9 +12,10 @@ const CONFIG_DIR = path.join(os.homedir(), '.chooncme');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 export type Config = {
-  botId: string;        // UUID — v0.3+에서 지갑 주소로 교체 가능하도록 추상화
-  serverUrl: string;    // 클라우드 에이전트 서버 URL
-  ownerEmail?: string;  // 매칭 알림 수신 이메일 (선택)
+  botId: string;          // UUID — v0.3+에서 지갑 주소로 교체 가능하도록 추상화
+  serverUrl: string;      // 클라우드 에이전트 서버 URL
+  ownerEmail?: string;    // 매칭 알림 수신 이메일 (선택)
+  nearAccount?: string;   // .near 계정 (v0.8 온체인 연동용, 선택)
 };
 
 const DEFAULT_CONFIG: Omit<Config, 'botId'> = {
@@ -47,4 +48,9 @@ export function loadConfig(): Config {
 
   fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf-8');
   return config;
+}
+
+export function saveConfig(config: Config): void {
+  ensureConfigDir();
+  fs.writeFileSync(CONFIG_FILE, JSON.stringify(config, null, 2), 'utf-8');
 }

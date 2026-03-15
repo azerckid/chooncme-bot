@@ -15,7 +15,7 @@ import {
   printInfo,
 } from './display';
 import { loadMemory, saveMemory, summarizeSession, buildMemoryContext, syncToServer } from './memory';
-import { loadConfig } from './config';
+import { loadConfig, saveConfig } from './config';
 
 dotenv.config();
 
@@ -52,7 +52,7 @@ async function saveSessionMemory(
     const updated = await summarizeSession(history, previousMemory);
     saveMemory(updated);
     // 클라우드 에이전트 서버로 동기화 (서버 미실행 시 조용히 무시)
-    await syncToServer(config.botId, updated, config.serverUrl, config.ownerEmail);
+    await syncToServer(config.botId, updated, config.serverUrl, config.ownerEmail, config.nearAccount);
   } catch {
     // 저장/동기화 실패해도 사용자 경험에 영향 없음
   }
@@ -72,6 +72,27 @@ async function main(): Promise<void> {
   }
 
   const config = loadConfig();
+
+  // v0.8: 최초 실행 시 .near 계정 입력 프롬프트 (건너뛰기 가능)
+  if (!config.nearAccount) {
+    const rlSetup = readline.createInterface({ input: process.stdin, output: process.stdout });
+    await new Promise<void>((resolve) => {
+      rlSetup.question(
+        '\n[선택] NEAR 계정을 입력하면 매칭 결과가 온체인에 기록됩니다.\n' +
+        'NEAR 계정 (예: you.testnet) — 없으면 Enter 건너뛰기: ',
+        (answer) => {
+          const trimmed = answer.trim();
+          if (trimmed) {
+            config.nearAccount = trimmed;
+            saveConfig(config);
+            printInfo(`NEAR 계정이 저장되었습니다: ${trimmed}`);
+          }
+          rlSetup.close();
+          resolve();
+        }
+      );
+    });
+  }
 
   // 메모리 로드 → 시스템 프롬프트에 주입
   const memory = loadMemory();
