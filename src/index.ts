@@ -14,7 +14,8 @@ import {
   printError,
   printInfo,
 } from './display';
-import { loadMemory, saveMemory, summarizeSession, buildMemoryContext } from './memory';
+import { loadMemory, saveMemory, summarizeSession, buildMemoryContext, syncToServer } from './memory';
+import { loadConfig } from './config';
 
 dotenv.config();
 
@@ -40,7 +41,8 @@ async function greet(agent: ChunSimAgent): Promise<void> {
 
 async function saveSessionMemory(
   agent: ChunSimAgent,
-  previousMemory: ReturnType<typeof loadMemory>
+  previousMemory: ReturnType<typeof loadMemory>,
+  config: ReturnType<typeof loadConfig>
 ): Promise<void> {
   const history = agent.getHistory();
   if (history.length < 2) return;
@@ -49,8 +51,10 @@ async function saveSessionMemory(
   try {
     const updated = await summarizeSession(history, previousMemory);
     saveMemory(updated);
+    // 클라우드 에이전트 서버로 동기화 (서버 미실행 시 조용히 무시)
+    await syncToServer(config.botId, updated, config.serverUrl);
   } catch {
-    // 저장 실패해도 사용자 경험에 영향 없음
+    // 저장/동기화 실패해도 사용자 경험에 영향 없음
   }
 }
 
@@ -66,6 +70,8 @@ async function main(): Promise<void> {
   if (!checkApiKey()) {
     process.exit(1);
   }
+
+  const config = loadConfig();
 
   // 메모리 로드 → 시스템 프롬프트에 주입
   const memory = loadMemory();
@@ -91,7 +97,7 @@ async function main(): Promise<void> {
     isExiting = true;
 
     await farewell(agent);
-    await saveSessionMemory(agent, memory);
+    await saveSessionMemory(agent, memory, config);
     printFooter();
     process.exit(0);
   };

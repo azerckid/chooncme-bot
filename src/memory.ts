@@ -1,11 +1,13 @@
 /**
- * AI Memory — 세션 요약 로컬 저장/로드
+ * AI Memory — 세션 요약 로컬 저장/로드 + 클라우드 에이전트 서버 동기화
  * 저장 위치: ~/.chooncme/memory.json
  */
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as os from 'os';
+import * as https from 'https';
+import * as http from 'http';
 import Anthropic from '@anthropic-ai/sdk';
 
 const MEMORY_DIR = path.join(os.homedir(), '.chooncme');
@@ -181,6 +183,48 @@ async function updateOwnerSummary(
   } catch {
     return previousSummary;
   }
+}
+
+// 클라우드 에이전트 서버로 프로파일 동기화
+export async function syncToServer(
+  botId: string,
+  memory: Memory,
+  serverUrl: string
+): Promise<void> {
+  const body = JSON.stringify({
+    botId,
+    owner_summary: memory.owner_summary,
+    known_facts: memory.known_facts,
+    sessions: memory.sessions,
+  });
+
+  return new Promise((resolve) => {
+    const url = new URL(`${serverUrl}/sync`);
+    const lib = url.protocol === 'https:' ? https : http;
+
+    const req = lib.request(
+      {
+        hostname: url.hostname,
+        port: url.port,
+        path: url.pathname,
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Content-Length': Buffer.byteLength(body),
+        },
+      },
+      (res) => {
+        // 응답 소비 (메모리 누수 방지)
+        res.resume();
+        resolve();
+      }
+    );
+
+    req.on('error', () => resolve()); // 서버 미실행 시 조용히 무시
+    req.setTimeout(5000, () => { req.destroy(); resolve(); });
+    req.write(body);
+    req.end();
+  });
 }
 
 // 메모리를 시스템 프롬프트용 문자열로 변환
