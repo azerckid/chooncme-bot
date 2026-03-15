@@ -1,12 +1,13 @@
 # Backlog
 > Created: 2026-03-11 03:00
-> Last Updated: 2026-03-16 (v0.8-hackathon 순서 앞당김)
+> Last Updated: 2026-03-17
 
 ---
 
 ## 현재 진행
 
-없음. v0.4 완료. 전체 루프(대화→매칭→알림) 완성.
+**v0.8-hackathon** — NEAR 연동 (BuidlHack 2026 Near AI 트랙, 마감: 2026-04-17)
+> 1주차 진행 중. 명세: [08_NEAR_HACKATHON_SPEC.md](../03_Technical_Specs/08_NEAR_HACKATHON_SPEC.md)
 
 ---
 
@@ -147,7 +148,7 @@
 - [ ] `POST /match/start` score ≥ 70 → `recordMatchOnChain()` 연결
 - [ ] NEAR 미설정 시 silent skip 처리
 
-**3주차 (3/31~4/6) — 클라이언트 + 배포 + 통합 테스트**
+**3주차 (3/31~4/6) — 클라이언트 + 배포 + 통합 테스트** (4/14 Builder Day 전 완료 목표)
 - [ ] `src/config.ts` — `nearAccount?: string` 필드 추가
 - [ ] `src/index.ts` — 최초 실행 시 `.near` 계정 입력 프롬프트 (건너뛰기 가능)
 - [ ] `src/memory.ts` — `syncToServer`에 `nearAccount` 전달
