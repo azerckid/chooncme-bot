@@ -66,7 +66,50 @@ NEAR 연동(v0.8)은 v0.5~v0.7과 기술적으로 독립적이므로 v0.4 위에
 
 ---
 
-## 3. 스마트 컨트랙트 설계 (`contracts/`)
+## 3. 사전 준비 — NEAR 계정 생성 (1주차 Day 1)
+
+구현 시작 전 테스트넷 계정 2개를 먼저 만든다.
+
+### 3.1 필요 계정
+
+| 계정 | 용도 |
+| :--- | :--- |
+| `chooncme.testnet` | 스마트 컨트랙트 배포 |
+| `chooncme-server.testnet` | 서버가 트랜잭션 서명 (대납) |
+
+### 3.2 NEAR CLI 설치 및 계정 생성
+
+```bash
+# 1. NEAR CLI 설치
+npm install -g near-cli
+
+# 2. 계정 생성 (Faucet 200 NEAR 자동 지급)
+near create-account chooncme.testnet --useFaucet
+near create-account chooncme-server.testnet --useFaucet
+
+# 3. 생성 확인 (잔액 조회)
+near state chooncme.testnet
+near state chooncme-server.testnet
+```
+
+### 3.3 FunctionCall 키 생성 (컨트랙트 배포 후)
+
+컨트랙트 배포 완료 후, `chooncme-server.testnet`에 제한 키를 추가한다.
+이 키는 `registerBot`, `recordMatch` 두 메서드만 호출 가능하다.
+
+```bash
+near add-key chooncme-server.testnet \
+  --contract-id chooncme.testnet \
+  --method-names registerBot,recordMatch
+```
+
+생성된 키(`ed25519:...`)를 `server/.env`의 `NEAR_PRIVATE_KEY`에 입력한다.
+
+> **FullAccess 키는 서버 환경변수에 절대 넣지 않는다.** FunctionCall 키만 사용.
+
+---
+
+## 4. 스마트 컨트랙트 설계 (`contracts/`)
 
 ### 3.1 디렉토리 구조
 
@@ -130,7 +173,7 @@ interface MatchRecord {
 
 ---
 
-## 4. 서버 연동 (`server/src/services/nearService.ts`)
+## 5. 서버 연동 (`server/src/services/nearService.ts`)
 
 ### 4.1 역할
 
@@ -161,7 +204,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 5. Bot ID ↔ `.near` 계정 연결
+## 6. Bot ID ↔ `.near` 계정 연결
 
 ### 흐름
 
@@ -206,7 +249,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 6. 배포 범위 (해커톤 기준)
+## 7. 배포 범위 (해커톤 기준)
 
 해커톤 데모는 **동작하는 라이브 데모**가 필요하다. 전체 v0.6 배포가 아닌 최소 범위만 진행한다.
 
@@ -223,7 +266,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 7. 타임라인 (4주)
+## 8. 타임라인 (4주)
 
 | 주차 | 기간 | 작업 | 마일스톤 |
 | :--- | :--- | :--- | :--- |
@@ -234,7 +277,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 8. 데모 시나리오 (피치용)
+## 9. 데모 시나리오 (피치용)
 
 ```
 1. npx chooncme-bot 실행
@@ -258,7 +301,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 9. 알려진 제약
+## 10. 알려진 제약
 
 | 제약 | 대응 |
 | :--- | :--- |
@@ -271,7 +314,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 10. 구현 완료 기준 (DoD)
+## 11. 구현 완료 기준 (DoD)
 
 - [ ] 컨트랙트 테스트넷 배포 완료 (`chooncme.testnet`)
 - [ ] `POST /sync` → `registerBot()` 온체인 호출 확인
@@ -283,7 +326,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 11. Related Documents
+## 12. Related Documents
 
 - **Technical_Specs**: [NEAR Protocol 통합 검토](./03_NEAR_PROTOCOL_ANALYSIS.md) — Part 4 구현 근거, Part 7 SDK 버전
 - **Technical_Specs**: [System Architecture](./02_SYSTEM_ARCHITECTURE.md) — 웹3 인증 설계 원칙

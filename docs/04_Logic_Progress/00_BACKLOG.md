@@ -129,12 +129,16 @@
 > 명세: [08_NEAR_HACKATHON_SPEC.md](../03_Technical_Specs/08_NEAR_HACKATHON_SPEC.md)
 > 기간: 2026-03-17 ~ 2026-04-17
 
-**1주차 (3/17~3/23) — 스마트 컨트랙트**
+**1주차 (3/17~3/23) — 계정 생성 + 스마트 컨트랙트**
+- [ ] NEAR CLI 설치 (`npm install -g near-cli`)
+- [ ] `chooncme.testnet` 계정 생성 (`near create-account chooncme.testnet --useFaucet`)
+- [ ] `chooncme-server.testnet` 계정 생성 (`near create-account chooncme-server.testnet --useFaucet`)
 - [ ] `contracts/` 디렉토리 초기화 (near-sdk-js v2.0)
 - [ ] `registerBot()` — 봇 등록 컨트랙트 메서드
 - [ ] `recordMatch()` — 매칭 결과 기록 컨트랙트 메서드
 - [ ] `getBot()`, `getMatchHistory()` — 조회 메서드
 - [ ] NEAR 테스트넷 배포 (`chooncme.testnet`)
+- [ ] FunctionCall 키 생성 (`chooncme-server.testnet` → `registerBot`, `recordMatch`만 허용)
 
 **2주차 (3/24~3/30) — 서버 연동**
 - [ ] `server/src/services/nearService.ts` — near-api-js v7 연동
