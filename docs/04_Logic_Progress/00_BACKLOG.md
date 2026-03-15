@@ -6,7 +6,7 @@
 
 ## 현재 진행
 
-없음. v0.2 완료. v0.3 기획 대기 중.
+없음. v0.3-A 완료. v0.3-B (Mogame 허브 연결) 기획 대기 중.
 
 ---
 
@@ -57,6 +57,25 @@
 
 ---
 
+## ✅ 완료 — v0.3-A 매칭 엔진 (2026-03-15)
+
+### 서버 추가 (`server/`)
+- [x] `store/hubStore.ts` — 허브 봇 등록/이탈/조회 (MatchCriteria 포함)
+- [x] `store/matchStore.ts` — 매칭 결과 저장/조회/상태 업데이트
+- [x] `engine/matchEngine.ts` — 하드 필터 + 봇-to-봇 대화 + Judge LLM 판정
+- [x] `routes/hub.ts` — POST /hub/join, GET /hub/bots, POST /hub/leave
+- [x] `routes/match.ts` — POST /match/start (비동기), GET /match/results/:botId
+
+### 완료 기준 (DoD) — 전항목 통과
+- [x] 허브 등록/이탈/목록 조회 정상 동작
+- [x] 하드 필터 통과/탈락 판단 정확
+- [x] 봇-to-봇 대화 MAX_TURNS=10 실행
+- [x] Judge LLM 0~100 점수 + match_signals/mismatch_signals/summary 반환
+- [x] 매칭 완료 결과 GET /match/results/:botId 조회 가능
+- [x] notified=true (score >= 70) 자동 설정
+
+---
+
 ## 미래 버전 아이디어 (v0.3+)
 
 ### 라이프 패턴 수집 — 칸반 보드
@@ -79,6 +98,7 @@
 
 - **v0.1 MVP** — 2026-03-15. 로컬 CLI + AI Memory.
 - **v0.2** — 2026-03-15. 클라우드 에이전트 서버 + 자동 sync.
+- **v0.3-A** — 2026-03-15. 매칭 엔진 (허브 API + 하드 필터 + Bot-to-Bot + Judge LLM).
 
 ---
 

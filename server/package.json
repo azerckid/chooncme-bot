@@ -1,6 +1,6 @@
 {
   "name": "chooncme-server",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "춘심이 클라우드 에이전트 서버",
   "main": "dist/index.js",
   "scripts": {
