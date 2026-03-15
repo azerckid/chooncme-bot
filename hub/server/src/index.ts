@@ -73,7 +73,7 @@ app.get("/health", (_req, res) => {
 // NEAR 이벤트 수신 엔드포인트 (매칭 엔진 서버 → 허브 서버)
 app.post("/near-event", (req, res) => {
   const { type, botId, botAId, botBId, score, summary } = req.body as {
-    type: "botRegistered" | "matchRecorded";
+    type: "botRegistered" | "matchRecorded" | "matchStarted" | "matchCompleted";
     botId?: string;
     botAId?: string;
     botBId?: string;
@@ -86,6 +86,36 @@ app.post("/near-event", (req, res) => {
     badgesA?: { id: string; label: string; color: string; emoji: string }[];
     badgesB?: { id: string; label: string; color: string; emoji: string }[];
   };
+
+  const { matchId, botAId: mBotAId, botBId: mBotBId, passed, matchSignals } = req.body as {
+    matchId?: string;
+    botAId?: string;
+    botBId?: string;
+    passed?: boolean;
+    matchSignals?: string[];
+  };
+
+  if (type === "matchStarted" && matchId && mBotAId && mBotBId) {
+    io.emit("matchStarted", { matchId, botAId: mBotAId, botBId: mBotBId });
+    console.log(`[hub] 관전: 매칭 시작 ${mBotAId} <> ${mBotBId}`);
+    res.json({ ok: true });
+    return;
+  }
+
+  if (type === "matchCompleted" && matchId) {
+    io.emit("matchCompleted", {
+      matchId,
+      botAId: mBotAId,
+      botBId: mBotBId,
+      score,
+      summary,
+      passed,
+      matchSignals,
+    });
+    console.log(`[hub] 관전: 매칭 완료 score=${score} passed=${passed}`);
+    res.json({ ok: true });
+    return;
+  }
 
   if (type === "botRegistered" && botId) {
     if (badges) botBadges[botId] = badges;

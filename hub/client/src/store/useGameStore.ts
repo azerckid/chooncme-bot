@@ -58,6 +58,18 @@ interface GameState {
   // 뱃지 상태 — botId → Badge[]
   botBadges: Record<string, { id: string; label: string; color: string; emoji: string }[]>;
 
+  // 관전 모드 상태
+  spectatorMatch: {
+    matchId: string;
+    botAId: string;
+    botBId: string;
+    status: 'in_progress' | 'completed';
+    score?: number;
+    summary?: string;
+    matchSignals?: string[];
+    passed?: boolean;
+  } | null;
+
   // Actions
   setKeyPressed: (keys: Record<string, boolean>) => void;
   setAction: (action: string) => void;
@@ -81,6 +93,7 @@ interface GameState {
   setBankGlowing: (glowing: boolean) => void;
   setWalkingToBankBotIds: (botIds: string[]) => void;
   setBotBadges: (botId: string, badges: { id: string; label: string; color: string; emoji: string }[]) => void;
+  setSpectatorMatch: (match: GameState['spectatorMatch']) => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -113,6 +126,7 @@ export const useGameStore = create<GameState>()(
     bankGlowing: false,
     walkingToBankBotIds: [],
     botBadges: {},
+    spectatorMatch: null,
 
     setKeyPressed: (keys) => {
       // 키보드 입력이 발생하면 자동 이동 취소
@@ -162,5 +176,6 @@ export const useGameStore = create<GameState>()(
     setBotBadges: (botId, badges) => set((state) => ({
       botBadges: { ...state.botBadges, [botId]: badges }
     })),
+    setSpectatorMatch: (match) => set({ spectatorMatch: match }),
   }))
 );

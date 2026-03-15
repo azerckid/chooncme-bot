@@ -14,6 +14,22 @@ import { sendMatchNotification } from '../services/notificationService';
 import { recordMatchOnChain } from '../services/nearService';
 import type { MatchResult } from '../store/matchStore';
 
+const HUB_SERVER_URL = process.env.HUB_SERVER_URL;
+
+async function notifyHubMatchEvent(body: Record<string, unknown>): Promise<void> {
+  if (!HUB_SERVER_URL) return;
+  try {
+    await fetch(`${HUB_SERVER_URL}/near-event`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch {
+    // 허브 미실행 시 조용히 무시
+  }
+}
+
 const router = Router();
 
 // POST /match/start
@@ -63,6 +79,9 @@ router.post('/start', async (req, res) => {
   saveMatch(pending);
   updateMatchStatus(matchId, 'in_progress');
 
+  // 허브에 매칭 시작 알림
+  notifyHubMatchEvent({ type: 'matchStarted', matchId, botAId: bot_a_id, botBId: bot_b_id });
+
   // ── PHASE 3: 봇-to-봇 대화 + Judge LLM ──────────────────────
   // 비동기로 실행 — 요청에 즉시 matchId 반환
   (async () => {
@@ -96,6 +115,18 @@ router.post('/start', async (req, res) => {
       console.log(
         `[match] 완료: ${bot_a_id} <> ${bot_b_id} — score=${judgeScore.score} endReason=${endReason}`
       );
+
+      // 허브에 매칭 완료 알림
+      notifyHubMatchEvent({
+        type: 'matchCompleted',
+        matchId,
+        botAId: bot_a_id,
+        botBId: bot_b_id,
+        score: judgeScore.score,
+        summary: judgeScore.summary,
+        matchSignals: judgeScore.match_signals,
+        passed: judgeScore.score >= 70,
+      });
 
       // v0.4: 알림 발송 (score >= 70 시)
       await sendMatchNotification(final, profileA.owner_email, profileB.owner_email);

@@ -25,6 +25,7 @@ import { socket } from "@/lib/socket";
 export default function MetaverseWorld() {
     const isStarted = useGameStore((state) => state.isStarted);
     const nearAnnouncement = useGameStore((state) => state.nearAnnouncement);
+    const spectatorMatch = useGameStore((state) => state.spectatorMatch);
     const setIsStarted = useGameStore((state) => state.setIsStarted);
     const otherPlayers = useGameStore((state) => state.otherPlayers); // 접속자 목록
     const setMyNickname = useGameStore((state) => state.setMyNickname);
@@ -230,6 +231,75 @@ export default function MetaverseWorld() {
 
             {isStarted && <LightingControlPanel />}
             {isStarted && <ChatSystem />}
+
+            {/* 관전 모드 — 매칭 진행 중 배너 */}
+            {spectatorMatch?.status === 'in_progress' && (
+                <div className="absolute top-20 left-1/2 -translate-x-1/2 z-20 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-center gap-3 px-6 py-3 bg-black/80 backdrop-blur-xl rounded-full border border-pink-500/40 shadow-[0_0_30px_rgba(236,72,153,0.2)]">
+                        <div className="w-2 h-2 rounded-full bg-pink-400 shadow-[0_0_8px_#ff6eb4] animate-ping" />
+                        <span className="text-pink-300 font-mono text-sm font-bold tracking-wide">
+                            매칭 진행 중...
+                        </span>
+                        <span className="text-pink-600 text-xs font-mono">BOT vs BOT</span>
+                    </div>
+                </div>
+            )}
+
+            {/* 관전 모드 — 매칭 결과 팝업 */}
+            {spectatorMatch?.status === 'completed' && (
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 animate-in fade-in zoom-in duration-500">
+                    <div className="flex flex-col gap-4 p-6 bg-zinc-950/95 backdrop-blur-xl rounded-2xl border shadow-2xl min-w-[320px] max-w-[400px]"
+                        style={{ borderColor: spectatorMatch.passed ? '#00ff88' : '#ffffff20' }}>
+                        {/* 헤더 */}
+                        <div className="flex items-center justify-between">
+                            <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">매칭 결과</span>
+                            {spectatorMatch.passed
+                                ? <span className="text-xs font-black text-green-400 bg-green-400/10 px-2 py-1 rounded-full border border-green-400/30">NEAR 기록됨</span>
+                                : <span className="text-xs font-black text-zinc-500 bg-zinc-800 px-2 py-1 rounded-full">미달</span>
+                            }
+                        </div>
+
+                        {/* 점수 */}
+                        <div className="flex items-center justify-center">
+                            <span className="text-6xl font-black"
+                                style={{ color: spectatorMatch.passed ? '#00ff88' : '#ffffff60' }}>
+                                {spectatorMatch.score}
+                            </span>
+                            <span className="text-zinc-500 text-xl ml-1 mt-4">/100</span>
+                        </div>
+
+                        {/* 요약 */}
+                        {spectatorMatch.summary && (
+                            <p className="text-zinc-300 text-sm text-center leading-relaxed">
+                                {spectatorMatch.summary}
+                            </p>
+                        )}
+
+                        {/* 매칭 시그널 */}
+                        {spectatorMatch.matchSignals && spectatorMatch.matchSignals.length > 0 && (
+                            <div className="flex flex-wrap gap-1 justify-center">
+                                {spectatorMatch.matchSignals.slice(0, 3).map((s, i) => (
+                                    <span key={i} className="text-[10px] px-2 py-0.5 rounded-full bg-green-400/10 text-green-300 border border-green-400/20">
+                                        {s}
+                                    </span>
+                                ))}
+                            </div>
+                        )}
+
+                        {/* NEAR Explorer 링크 */}
+                        {spectatorMatch.passed && (
+                            <a
+                                href={`https://testnet.nearblocks.io/address/chooncme.testnet`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="text-center text-[11px] text-green-400/70 hover:text-green-400 font-mono underline underline-offset-2 transition-colors"
+                            >
+                                NEAR Explorer에서 확인
+                            </a>
+                        )}
+                    </div>
+                </div>
+            )}
 
             {/* NEAR 이벤트 공지 배너 */}
             {nearAnnouncement && (
