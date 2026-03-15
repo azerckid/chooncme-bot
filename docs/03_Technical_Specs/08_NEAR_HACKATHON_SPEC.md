@@ -1,6 +1,6 @@
 # NEAR 해커톤 구현 명세 (BuidlHack 2026)
 > Created: 2026-03-16
-> Last Updated: 2026-03-17
+> Last Updated: 2026-03-16
 
 ---
 
@@ -92,7 +92,41 @@ near state chooncme.testnet
 near state chooncme-server.testnet
 ```
 
-### 3.3 FunctionCall 키 생성 (컨트랙트 배포 후)
+### 3.3 생성된 계정 현황 (1주차 완료)
+
+| 계정 | 역할 | 잔액 (초기) |
+| :--- | :--- | :--- |
+| `chooncme.testnet` | 컨트랙트 배포 주소 | 10 NEAR (faucet) |
+| `chooncme-server.testnet` | 서버 서명 계정 | 10 NEAR (faucet) |
+
+#### `chooncme.testnet` 키
+
+| 구분 | 값 |
+| :--- | :--- |
+| 타입 | FullAccess |
+| Public Key | `ed25519:Frvur2W4JQJmJUVBx14QXaG82hEpnJqyUe4jinqjAjqi` |
+| Private Key 위치 | `~/.near-credentials/testnet/chooncme.testnet.json` (로컬 보관) |
+| 용도 | 컨트랙트 배포 시에만 사용 — 서버 환경변수에 넣지 않음 |
+
+#### `chooncme-server.testnet` 키
+
+| 구분 | 값 |
+| :--- | :--- |
+| Key 1 타입 | FullAccess |
+| Key 1 Public Key | `ed25519:5RcLPkyaLRB27L7sah1qJUH1zB9SG9NoRoxD2HLH3HHe` |
+| Key 1 Private Key 위치 | `~/.near-credentials/testnet/chooncme-server.testnet.json` (로컬 보관) |
+| Key 1 용도 | 계정 관리 전용 — 서버 환경변수에 넣지 않음 |
+| Key 2 타입 | **FunctionCall (제한 키)** |
+| Key 2 Public Key | `ed25519:EgF6ry7kT6H2K9moKqfw7cLweVMgu6nhPA8fCTTpFdyX` |
+| Key 2 허용 메서드 | `registerBot`, `recordMatch` only |
+| Key 2 허용 잔액 | ~0.246 NEAR (초기 0.25 NEAR 설정) |
+| Key 2 대상 컨트랙트 | `chooncme.testnet` |
+| **Key 2 Private Key** | **`server/.env` `NEAR_PRIVATE_KEY`에 설정됨 — 서버가 트랜잭션 서명에 사용** |
+
+> **원칙**: FullAccess 키는 서버 환경변수에 절대 넣지 않는다. FunctionCall 제한 키만 서버에 노출한다.
+> FunctionCall 키 잔액이 소진되면 `near add-key`로 새 제한 키를 추가한다.
+
+### 3.4 FunctionCall 키 생성 (컨트랙트 배포 후)
 
 컨트랙트 배포 완료 후, `chooncme-server.testnet`에 제한 키를 추가한다.
 이 키는 `registerBot`, `recordMatch` 두 메서드만 호출 가능하다.
