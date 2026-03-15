@@ -186,3 +186,4 @@ Phase 3   →  데스크탑 트레이 앱 (로컬 에이전트, 프리미엄 tie
 
 - **Concept_Design**: [README (프로젝트 시작 기록)](../../README.md) - 이 프로젝트가 시작된 배경
 - **Concept_Design**: [Roadmap](./02_ROADMAP.md) - Phase별 실행 계획
+- **Concept_Design**: [User Pattern Collection](./04_USER_PATTERN_COLLECTION.md) - 패턴 레이어 분류 및 기술적 수집 가능 여부
