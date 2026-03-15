@@ -70,6 +70,41 @@ app.get("/health", (_req, res) => {
   res.json({ ok: true, version: "0.3.0", service: "chooncme-hub-server" });
 });
 
+// NEAR 이벤트 수신 엔드포인트 (매칭 엔진 서버 → 허브 서버)
+app.post("/near-event", (req, res) => {
+  const { type, botId, botAId, botBId, score, summary } = req.body as {
+    type: "botRegistered" | "matchRecorded";
+    botId?: string;
+    botAId?: string;
+    botBId?: string;
+    score?: number;
+    summary?: string;
+  };
+
+  if (type === "botRegistered" && botId) {
+    // botId에 해당하는 socketId 탐색
+    const targetSocket = Object.values(users).find(u => u.botId === botId);
+    const message = `춘심봇이 NEAR 기억은행에 등록되었습니다`;
+    io.emit("nearAnnouncement", { type, botId, message });
+    if (targetSocket) {
+      io.emit("walkToBank", { socketId: targetSocket.id, botId });
+    }
+    console.log(`[hub] NEAR 이벤트: botRegistered botId=${botId}`);
+  }
+
+  if (type === "matchRecorded" && botAId && botBId) {
+    const socketA = Object.values(users).find(u => u.botId === botAId);
+    const socketB = Object.values(users).find(u => u.botId === botBId);
+    const message = `매칭 기록이 NEAR에 저장되었습니다 (score: ${score})`;
+    io.emit("nearAnnouncement", { type, botAId, botBId, score, summary, message });
+    if (socketA) io.emit("walkToBank", { socketId: socketA.id, botId: botAId });
+    if (socketB) io.emit("walkToBank", { socketId: socketB.id, botId: botBId });
+    console.log(`[hub] NEAR 이벤트: matchRecorded ${botAId} <> ${botBId} score=${score}`);
+  }
+
+  res.json({ ok: true });
+});
+
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {

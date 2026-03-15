@@ -14,7 +14,22 @@ const {
   NEAR_CONTRACT_ID,
   NEAR_ACCOUNT_ID,
   NEAR_PRIVATE_KEY,
+  HUB_SERVER_URL,
 } = process.env;
+
+async function notifyHub(body: Record<string, unknown>): Promise<void> {
+  if (!HUB_SERVER_URL) return;
+  try {
+    await fetch(`${HUB_SERVER_URL}/near-event`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      signal: AbortSignal.timeout(3000),
+    });
+  } catch {
+    // 허브 미실행 시 조용히 무시
+  }
+}
 
 export function isNearConfigured(): boolean {
   return !!(NEAR_CONTRACT_ID && NEAR_ACCOUNT_ID && NEAR_PRIVATE_KEY);
@@ -48,6 +63,7 @@ export async function registerBotOnChain(profile: AgentProfile): Promise<void> {
       deposit: BigInt(0),
     });
     console.log(`[NEAR] registerBot: ${profile.botId}`);
+    await notifyHub({ type: "botRegistered", botId: profile.botId });
   } catch (err) {
     console.error(`[NEAR] registerBot 실패 (skip):`, err);
   }
@@ -71,6 +87,13 @@ export async function recordMatchOnChain(result: MatchResult): Promise<void> {
       deposit: BigInt(0),
     });
     console.log(`[NEAR] recordMatch: ${result.matchId} score=${result.score}`);
+    await notifyHub({
+      type: "matchRecorded",
+      botAId: result.bot_a_id,
+      botBId: result.bot_b_id,
+      score: result.score,
+      summary: result.summary,
+    });
   } catch (err) {
     console.error(`[NEAR] recordMatch 실패 (skip):`, err);
   }

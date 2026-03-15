@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import * as THREE from "three";
 import { socket } from "@/lib/socket";
 import { useGameStore } from "@/store/useGameStore";
 
@@ -12,6 +13,11 @@ export function useSocket() {
     const setOtherPlayers = useGameStore((state) => state.setOtherPlayers);
     const updateOtherPlayerPosition = useGameStore((state) => state.updateOtherPlayerPosition);
     const removeOtherPlayer = useGameStore((state) => state.removeOtherPlayer);
+    const setNearAnnouncement = useGameStore((state) => state.setNearAnnouncement);
+    const setBankGlowing = useGameStore((state) => state.setBankGlowing);
+    const setWalkingToBankBotIds = useGameStore((state) => state.setWalkingToBankBotIds);
+    const setTargetPosition = useGameStore((state) => state.setTargetPosition);
+    const setIsAutoMoving = useGameStore((state) => state.setIsAutoMoving);
 
     // 1. 소켓 연결 및 초기화
     useEffect(() => {
@@ -61,6 +67,30 @@ export function useSocket() {
             removeOtherPlayer(data.id);
         };
 
+        // NEAR 이벤트: 공지 배너 + 뱅크 글로우
+        const onNearAnnouncement = (data: { message: string }) => {
+            setNearAnnouncement(data.message);
+            setBankGlowing(true);
+            // 5초 후 자동 소거
+            setTimeout(() => {
+                setNearAnnouncement(null);
+                setBankGlowing(false);
+            }, 5000);
+        };
+
+        // NEAR 이벤트: 내 봇이 대상이면 뱅크로 이동
+        const BANK_POSITION = new THREE.Vector3(0, 0, -12);
+        const onWalkToBank = (data: { socketId: string; botId: string }) => {
+            setWalkingToBankBotIds([data.botId]);
+            // 내 봇이 대상인 경우 자동 이동
+            if (data.socketId === socket.id) {
+                setTargetPosition(BANK_POSITION);
+                setIsAutoMoving(true);
+            }
+            // 3초 후 초기화
+            setTimeout(() => setWalkingToBankBotIds([]), 4000);
+        };
+
         // 리스너 등록
         socket.on("connect", onConnect);
         socket.on("connect_error", onConnectError);
@@ -68,6 +98,8 @@ export function useSocket() {
         socket.on("playerJoined", onPlayerJoined);
         socket.on("playerMoved", onPlayerMoved);
         socket.on("playerLeft", onPlayerLeft);
+        socket.on("nearAnnouncement", onNearAnnouncement);
+        socket.on("walkToBank", onWalkToBank);
 
         // 연결 시도 (리스너 등록 후)
         if (!socket.connected) {
@@ -86,8 +118,10 @@ export function useSocket() {
             socket.off("playerJoined", onPlayerJoined);
             socket.off("playerMoved", onPlayerMoved);
             socket.off("playerLeft", onPlayerLeft);
+            socket.off("nearAnnouncement", onNearAnnouncement);
+            socket.off("walkToBank", onWalkToBank);
         };
-    }, [isStarted, myNickname, myBotId, myCriteria, setOtherPlayers, updateOtherPlayerPosition, removeOtherPlayer]);
+    }, [isStarted, myNickname, myBotId, myCriteria, setOtherPlayers, updateOtherPlayerPosition, removeOtherPlayer, setNearAnnouncement, setBankGlowing, setWalkingToBankBotIds, setTargetPosition, setIsAutoMoving]);
 
     // 2. 내 위치 전송 (Throttling 적용: 50ms)
     const lastEmitTime = useRef<number>(0);

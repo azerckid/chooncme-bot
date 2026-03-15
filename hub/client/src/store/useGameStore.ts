@@ -49,6 +49,11 @@ interface GameState {
   myBotId: string;
   myCriteria: { region?: string; interests?: string[] };
 
+  // NEAR 이벤트 상태
+  nearAnnouncement: string | null;       // 공지 배너 메시지
+  bankGlowing: boolean;                  // 뱅크 글로우 활성화 여부
+  walkingToBankBotIds: string[];         // 현재 뱅크로 이동 중인 botId 목록
+
   // Actions
   setKeyPressed: (keys: Record<string, boolean>) => void;
   setAction: (action: string) => void;
@@ -66,6 +71,11 @@ interface GameState {
   setMyCriteria: (criteria: { region?: string; interests?: string[] }) => void;
   updateOtherPlayerPosition: (id: string, position: PlayerPosition, action?: string, nickname?: string) => void;
   removeOtherPlayer: (id: string) => void;
+
+  // NEAR 이벤트 액션
+  setNearAnnouncement: (message: string | null) => void;
+  setBankGlowing: (glowing: boolean) => void;
+  setWalkingToBankBotIds: (botIds: string[]) => void;
 }
 
 export const useGameStore = create<GameState>()(
@@ -93,6 +103,10 @@ export const useGameStore = create<GameState>()(
     myNickname: "",
     myBotId: "",
     myCriteria: {},
+
+    nearAnnouncement: null,
+    bankGlowing: false,
+    walkingToBankBotIds: [],
 
     setKeyPressed: (keys) => {
       // 키보드 입력이 발생하면 자동 이동 취소
@@ -134,5 +148,9 @@ export const useGameStore = create<GameState>()(
       delete newPlayers[id];
       return { otherPlayers: newPlayers };
     }),
+
+    setNearAnnouncement: (message) => set({ nearAnnouncement: message }),
+    setBankGlowing: (glowing) => set({ bankGlowing: glowing }),
+    setWalkingToBankBotIds: (botIds) => set({ walkingToBankBotIds: botIds }),
   }))
 );

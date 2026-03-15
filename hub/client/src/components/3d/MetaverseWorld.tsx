@@ -24,6 +24,7 @@ import { socket } from "@/lib/socket";
 
 export default function MetaverseWorld() {
     const isStarted = useGameStore((state) => state.isStarted);
+    const nearAnnouncement = useGameStore((state) => state.nearAnnouncement);
     const setIsStarted = useGameStore((state) => state.setIsStarted);
     const otherPlayers = useGameStore((state) => state.otherPlayers); // 접속자 목록
     const setMyNickname = useGameStore((state) => state.setMyNickname);
@@ -228,6 +229,19 @@ export default function MetaverseWorld() {
 
             {isStarted && <LightingControlPanel />}
             {isStarted && <ChatSystem />}
+
+            {/* NEAR 이벤트 공지 배너 */}
+            {nearAnnouncement && (
+                <div className="absolute top-6 left-1/2 -translate-x-1/2 z-20 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <div className="flex items-center gap-3 px-6 py-3 bg-black/80 backdrop-blur-xl rounded-full border border-green-500/40 shadow-[0_0_30px_rgba(0,255,136,0.2)]">
+                        <div className="w-2 h-2 rounded-full bg-green-400 shadow-[0_0_8px_#00ff88] animate-pulse" />
+                        <span className="text-green-300 font-mono text-sm font-bold tracking-wide">
+                            {nearAnnouncement}
+                        </span>
+                        <span className="text-green-600 text-xs font-mono">NEAR</span>
+                    </div>
+                </div>
+            )}
 
             {isStarted && (
                 <div className="absolute bottom-6 right-6 z-10 pointer-events-none animate-in fade-in duration-1000">
