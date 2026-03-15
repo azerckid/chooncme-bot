@@ -19,7 +19,7 @@ export type Config = {
 };
 
 const DEFAULT_CONFIG: Omit<Config, 'botId'> = {
-  serverUrl: 'http://localhost:3000',
+  serverUrl: 'https://chooncme-bot.onrender.com',
 };
 
 function ensureConfigDir(): void {
