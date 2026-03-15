@@ -10,6 +10,7 @@ import { getHubBot } from '../store/hubStore';
 import { getProfile as getAgentProfile } from '../store/agentStore';
 import { saveMatch, getMatchesByBot, updateMatchStatus } from '../store/matchStore';
 import { hardFilter, runBotConversation } from '../engine/matchEngine';
+import { sendMatchNotification } from '../services/notificationService';
 import type { MatchResult } from '../store/matchStore';
 
 const router = Router();
@@ -94,6 +95,9 @@ router.post('/start', async (req, res) => {
       console.log(
         `[match] 완료: ${bot_a_id} <> ${bot_b_id} — score=${judgeScore.score} endReason=${endReason}`
       );
+
+      // v0.4: 알림 발송 (score >= 70 시)
+      await sendMatchNotification(final, profileA.owner_email, profileB.owner_email);
     } catch (err) {
       console.error(`[match] 오류: ${err}`);
       updateMatchStatus(matchId, 'failed');

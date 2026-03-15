@@ -23,6 +23,7 @@ router.post('/', (req: Request, res: Response) => {
     known_facts: body.known_facts ?? [],
     sessions: body.sessions ?? [],
     last_synced: new Date().toISOString(),
+    owner_email: body.owner_email,
   };
 
   upsertProfile(profile);

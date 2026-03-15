@@ -12,8 +12,9 @@ const CONFIG_DIR = path.join(os.homedir(), '.chooncme');
 const CONFIG_FILE = path.join(CONFIG_DIR, 'config.json');
 
 export type Config = {
-  botId: string;       // UUID — v0.3+에서 지갑 주소로 교체 가능하도록 추상화
-  serverUrl: string;   // 클라우드 에이전트 서버 URL
+  botId: string;        // UUID — v0.3+에서 지갑 주소로 교체 가능하도록 추상화
+  serverUrl: string;    // 클라우드 에이전트 서버 URL
+  ownerEmail?: string;  // 매칭 알림 수신 이메일 (선택)
 };
 
 const DEFAULT_CONFIG: Omit<Config, 'botId'> = {

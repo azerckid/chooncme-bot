@@ -52,7 +52,7 @@ async function saveSessionMemory(
     const updated = await summarizeSession(history, previousMemory);
     saveMemory(updated);
     // 클라우드 에이전트 서버로 동기화 (서버 미실행 시 조용히 무시)
-    await syncToServer(config.botId, updated, config.serverUrl);
+    await syncToServer(config.botId, updated, config.serverUrl, config.ownerEmail);
   } catch {
     // 저장/동기화 실패해도 사용자 경험에 영향 없음
   }

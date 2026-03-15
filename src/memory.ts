@@ -189,13 +189,15 @@ async function updateOwnerSummary(
 export async function syncToServer(
   botId: string,
   memory: Memory,
-  serverUrl: string
+  serverUrl: string,
+  ownerEmail?: string,
 ): Promise<void> {
   const body = JSON.stringify({
     botId,
     owner_summary: memory.owner_summary,
     known_facts: memory.known_facts,
     sessions: memory.sessions,
+    ...(ownerEmail ? { owner_email: ownerEmail } : {}),
   });
 
   return new Promise((resolve) => {

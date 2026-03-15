@@ -18,6 +18,7 @@ export type AgentProfile = {
   known_facts: string[];
   sessions: SessionSummary[];
   last_synced: string; // ISO timestamp
+  owner_email?: string; // 알림 수신 이메일 (선택)
 };
 
 // POST /sync 요청 바디
@@ -26,6 +27,7 @@ export type SyncRequest = {
   owner_summary: string;
   known_facts: string[];
   sessions: SessionSummary[];
+  owner_email?: string; // 알림 수신 이메일 (선택)
 };
 
 // POST /agent/:botId/chat 요청 바디

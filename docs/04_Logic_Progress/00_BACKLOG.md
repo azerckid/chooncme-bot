@@ -1,12 +1,12 @@
 # Backlog
 > Created: 2026-03-11 03:00
-> Last Updated: 2026-03-15 (v0.3 완료)
+> Last Updated: 2026-03-15 (v0.4 완료)
 
 ---
 
 ## 현재 진행
 
-v0.4 알림 채널 구현 중.
+없음. v0.4 완료. 전체 루프(대화→매칭→알림) 완성.
 
 ---
 
@@ -100,6 +100,25 @@ v0.4 알림 채널 구현 중.
 
 ---
 
+## ✅ 완료 — v0.4 알림 채널 (2026-03-15)
+
+### 서버 추가 (`server/`)
+- [x] `services/notificationService.ts` — 알림 발송 추상화 (SMTP/콘솔 자동 전환)
+- [x] `AgentProfile.owner_email` 필드 추가
+- [x] `POST /sync` — owner_email 수신 및 저장
+- [x] `POST /match/start` — score ≥ 70 시 양쪽 주인에게 자동 알림
+
+### 클라이언트 (`src/`)
+- [x] `config.ts` — ownerEmail 필드 추가
+- [x] `memory.ts` — syncToServer에 ownerEmail 전달
+
+### 완료 기준 (DoD)
+- [x] score ≥ 70 매칭 시 양쪽 주인 이메일로 알림 발송
+- [x] SMTP 미설정 시 콘솔 출력 (개발 모드) 확인
+- [x] 알림 본문: 점수 / match_signals / summary / 허브 URL 포함
+
+---
+
 ## 미래 버전 아이디어 (v0.3+)
 
 ### 라이프 패턴 수집 — 칸반 보드
@@ -125,6 +144,7 @@ v0.4 알림 채널 구현 중.
 - **v0.3-A** — 2026-03-15. 매칭 엔진 (허브 API + 하드 필터 + Bot-to-Bot + Judge LLM).
 - **v0.3-B** — 2026-03-15. Mogame fork → 춘심 허브 (3D 웹 + Socket.io + 매칭 엔진 연동).
 - **v0.3-C** — 2026-03-15. 허브 실제 구동 확인 (3D 입장 + Socket.io 연동 + hub/bots 등록 검증).
+- **v0.4** — 2026-03-15. 알림 채널 (이메일 / 콘솔 개발 모드, SMTP 환경변수로 전환 가능).
 
 ---
 
