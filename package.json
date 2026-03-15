@@ -1,0 +1,23 @@
+{
+  "name": "chooncme-bot",
+  "version": "0.1.0",
+  "description": "내 춘심이를 키우는 로컬 AI 에이전트",
+  "main": "dist/index.js",
+  "bin": {
+    "chooncme-bot": "./dist/index.js"
+  },
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.39.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.0"
+  }
+}
