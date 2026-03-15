@@ -1,6 +1,6 @@
 import { io, Socket } from "socket.io-client";
 
-const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "https://140.245.69.42.nip.io";
+const SOCKET_URL = process.env.NEXT_PUBLIC_SOCKET_URL || "http://localhost:5050";
 
 class SocketService {
     private static instance: Socket | null = null;
@@ -11,8 +11,7 @@ class SocketService {
                 reconnectionAttempts: 5,
                 reconnectionDelay: 1000,
                 autoConnect: false, // 필요할 때 수동으로 연결하기 위해 false로 설정
-                transports: ["websocket"], // 🚀 웹소켓 전용 모드
-                secure: true,              // 🔒 SSL 사용 명시
+                transports: ["websocket", "polling"],
             });
 
             SocketService.instance.on("connect", () => {
