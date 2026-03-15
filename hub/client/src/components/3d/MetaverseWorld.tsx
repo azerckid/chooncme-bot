@@ -10,6 +10,7 @@ import { GroupCube } from "./interaction/GroupCube";
 import { DestinationMarker } from "./interaction/DestinationMarker";
 
 import { MoviePlane } from "./environment/MoviePlane";
+import { NearMemoryBank } from "./environment/NearMemoryBank";
 import { OtherPlayer } from "./character/OtherPlayer";
 import { Player } from "./character/Player";
 import { useGameStore } from "@/store/useGameStore";
@@ -79,6 +80,7 @@ export default function MetaverseWorld() {
                         </group>
 
                         <GroupCube />
+                        <NearMemoryBank />
                         <Player nickname={nickname} />
                         {/* 다른 유저들 렌더링 */}
                         {Object.values(otherPlayers).map((player) => (
