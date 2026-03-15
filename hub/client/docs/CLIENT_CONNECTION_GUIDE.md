@@ -1,0 +1,86 @@
+# 📡 Metaverse Game Server - 클라이언트 접속 가이드 (현행화 완료)
+
+이 문서는 프론트엔드(클라이언트) 개발자가 소켓 서버에 연결하기 위한 **실제 구현 기준** 정보를 담고 있습니다.  
+현재 서버는 **Oracle Cloud**에 배포되어 있으며, **HTTPS/WSS Secure Connection**이 적용되어 있습니다.
+
+---
+
+## 📌 1. 서버 접속 정보 (Connection Info)
+
+| 구분 | 값 | 비고 |
+| :--- | :--- | :--- |
+| **서버 URL** | **`https://140.245.69.42.nip.io`** | **Port 번호 없음** (443 사용) |
+| **프로토콜** | `wss://` (HTTPS) | 소켓 통신 시 보안 연결 필수 |
+| **Transports** | `["websocket"]` | 폴링 없이 즉시 웹소켓 연결 권장 |
+
+> **⚠️ 주의사항**:  
+> Vercel 등 HTTPS 환경에서 배포된 클라이언트는 반드시 위 **HTTPS 주소**를 사용해야 합니다.
+
+---
+
+## 💻 2. 클라이언트 코드 예시
+
+```typescript
+import { io } from "socket.io-client";
+
+// 서버 주소 (HTTPS 필수)
+const SOCKET_URL = "https://140.245.69.42.nip.io";
+
+export const socket = io(SOCKET_URL, {
+  transports: ["websocket"], // 🚀 중요: 웹소켓 전용 모드
+  secure: true,              // 🔒 중요: SSL 사용 명시
+  autoConnect: false         // 수동 연결 제어 (타이밍 이슈 방지)
+});
+```
+
+---
+
+## 📡 3. 이벤트 명세 (Socket Events)
+
+**실제 구동 중인 서버 코드(`index.ts`)** 기준입니다.
+
+### [Client -> Server] (보내는 데이터)
+
+| 이벤트명 | 데이터 예시 | 설명 |
+| :--- | :--- | :--- |
+| **`join`** | `{ nickname: "Hero" }` | 닉네임과 함께 게임 입장 요청 |
+| **`playerMove`** | `{ position: { x, y, z } }` | 플레이어 이동 좌표 전송 |
+| **`chat`** | `{ message: "Hello!" }` | 채팅 메시지 전송 (객체 형태) |
+
+### [Server -> Client] (받는 데이터)
+
+| 이벤트명 | 데이터 타입 | 설명 |
+| :--- | :--- | :--- |
+| **`init`** | `{ id: "...", users: { ... } }` | 접속 직후(join 전), 현재 접속 중인 모든 유저 목록 수신 |
+| **`playerJoined`** | `{ id, nickname, position }` | 새로운 유저가 들어왔을 때 알림 |
+| **`playerMoved`** | `{ id, position: { x,y,z } }` | 다른 유저가 움직였을 때 좌표 수신 |
+| **`playerLeft`** | `{ id }` | 다른 유저가 나갔을 때 알림 |
+| **`chat`** | `{ id, sender, message, timestamp }` | 다른 유저(또는 나)의 채팅 메시지 수신 |
+
+---
+
+## 🛠 4. 주요 로직 가이드 (타이밍 이슈 해결)
+
+**문제 상황**: `socket.connect()` 직후 서버가(`connection` 이벤트 핸들러에서) 즉시 `init` 이벤트를 보냅니다. 클라이언트가 리스너를 늦게 등록하면 초기 유저 목록을 놓칠 수 있습니다.
+
+**권장 구현 순서**:
+1. `socket.on("init", ...)` 등 **리스너를 먼저 등록**합니다.
+2. `socket.connect()`를 호출합니다.
+3. `connect` 이벤트가 발생하면(`socket.on("connect")`), 그때 `socket.emit("join", ...)`으로 입장을 알립니다.
+
+```typescript
+// 예시: Hooks 로직
+useEffect(() => {
+    // 1. 리스너 등록
+    socket.on("connect", () => {
+        // 3. 연결 성공 후 입장
+        socket.emit("join", { nickname: "MyName" });
+    });
+    socket.on("init", (data) => { ... });
+
+    // 2. 연결 시도
+    if (!socket.connected) socket.connect();
+    
+    // ... cleanup ...
+}, []);
+```
