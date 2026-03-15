@@ -26,24 +26,9 @@ export function printChunsim(text: string): void {
   }
 }
 
-export function printChunsimChunk(chunk: string): void {
-  process.stdout.write(chunk);
-}
-
-export function printChunsimStreamStart(): void {
-  process.stdout.write(`\n${CHUNSIM_NAME}: `);
-}
-
-export function printChunsimStreamEnd(fullText: string): void {
-  // 스트리밍 완료 후 '---' 분리 처리
-  const parts = fullText.split(/\s*---\s*/);
-  if (parts.length > 1) {
-    // 다중 메시지인 경우 재출력
-    process.stdout.write('\r\x1b[K'); // 현재 줄 지우기
-    printChunsim(fullText);
-  } else {
-    process.stdout.write('\n');
-  }
+// 스트리밍은 내부에서 버퍼링, 완료 후 포맷해서 출력
+export function printChunsimResponse(fullText: string): void {
+  printChunsim(fullText);
 }
 
 export function printError(msg: string): void {

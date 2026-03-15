@@ -10,8 +10,7 @@ import { ChunSimAgent } from './agent';
 import {
   printHeader,
   printFooter,
-  printChunsimStreamStart,
-  printChunsimStreamEnd,
+  printChunsimResponse,
   printError,
   printInfo,
 } from './display';
@@ -32,13 +31,11 @@ function checkApiKey(): boolean {
 }
 
 async function greet(agent: ChunSimAgent): Promise<void> {
-  printChunsimStreamStart();
   let fullText = '';
   await agent.chat('(대화 시작. 짧고 다정하게 인사해줘.)', (chunk) => {
-    process.stdout.write(chunk);
     fullText += chunk;
   });
-  printChunsimStreamEnd(fullText);
+  printChunsimResponse(fullText);
 }
 
 async function saveSessionMemory(
@@ -58,13 +55,11 @@ async function saveSessionMemory(
 }
 
 async function farewell(agent: ChunSimAgent): Promise<void> {
-  printChunsimStreamStart();
   let fullText = '';
   await agent.chat('(대화 종료. 짧고 아쉬운 작별 인사를 해줘.)', (chunk) => {
-    process.stdout.write(chunk);
     fullText += chunk;
   });
-  printChunsimStreamEnd(fullText);
+  printChunsimResponse(fullText);
 }
 
 async function main(): Promise<void> {
@@ -119,13 +114,11 @@ async function main(): Promise<void> {
       }
 
       try {
-        printChunsimStreamStart();
         let fullText = '';
         await agent.chat(trimmed, (chunk) => {
-          process.stdout.write(chunk);
           fullText += chunk;
         });
-        printChunsimStreamEnd(fullText);
+        printChunsimResponse(fullText);
       } catch (err) {
         const msg = err instanceof Error ? err.message : String(err);
         if (msg.includes('ENOTFOUND') || msg.includes('ECONNREFUSED') || msg.includes('network')) {
