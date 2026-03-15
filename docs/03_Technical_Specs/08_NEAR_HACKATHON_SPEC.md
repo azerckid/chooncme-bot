@@ -173,18 +173,35 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 6. 타임라인 (4주)
+## 6. 배포 범위 (해커톤 기준)
+
+해커톤 데모는 **동작하는 라이브 데모**가 필요하다. 전체 v0.6 배포가 아닌 최소 범위만 진행한다.
+
+| 항목 | 해커톤 전 필요 | 이유 |
+| :--- | :---: | :--- |
+| NEAR 컨트랙트 → 테스트넷 | ✅ 필수 | NEAR 사용 증명 |
+| 매칭 엔진 서버 → Railway | ✅ 필수 | 피치 데이 실시간 데모 안정성 |
+| 허브 서버 → Railway | 선택 | 데모에 허브 포함 시 |
+| 허브 클라이언트 → Vercel | 선택 | 데모에 3D 허브 포함 시 |
+| npm publish | ❌ 불필요 | 해커톤 후 v0.6에서 진행 |
+| 커스텀 도메인 | ❌ 불필요 | Railway/Vercel 기본 URL로 충분 |
+
+> 매칭 엔진 서버 Railway 배포는 v0.6 전체 배포의 선행 작업이 되므로, 해커톤 후 v0.6에서 재활용 가능.
+
+---
+
+## 7. 타임라인 (4주)
 
 | 주차 | 기간 | 작업 |
 | :--- | :--- | :--- |
 | **1주차** | 3/17~3/23 | 컨트랙트 작성 + 테스트넷 배포 |
 | **2주차** | 3/24~3/30 | `nearService.ts` 구현 + 서버 연동 |
-| **3주차** | 3/31~4/6 | 클라이언트 nearAccount 연결 + 통합 테스트 |
-| **4주차** | 4/7~4/17 | 데모 정리 + 피치 자료 준비 + 제출 |
+| **3주차** | 3/31~4/6 | 클라이언트 nearAccount 연결 + 매칭 엔진 서버 Railway 배포 + 통합 테스트 |
+| **4주차** | 4/7~4/17 | 데모 시나리오 완주 + 피치 자료 준비 + 제출 |
 
 ---
 
-## 7. 데모 시나리오 (피치용)
+## 8. 데모 시나리오 (피치용)
 
 ```
 1. npx chooncme-bot 실행
@@ -208,7 +225,7 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 8. 알려진 제약
+## 9. 알려진 제약
 
 | 제약 | 대응 |
 | :--- | :--- |
@@ -219,18 +236,19 @@ export function isNearConfigured(): boolean   // 환경변수 미설정 시 fals
 
 ---
 
-## 9. 구현 완료 기준 (DoD)
+## 10. 구현 완료 기준 (DoD)
 
 - [ ] 컨트랙트 테스트넷 배포 완료 (`chooncme.testnet`)
 - [ ] `POST /sync` → `registerBot()` 온체인 호출 확인
 - [ ] `POST /match/start` score ≥ 70 → `recordMatch()` 온체인 호출 확인
 - [ ] NEAR Explorer에서 두 트랜잭션 조회 가능
+- [ ] 매칭 엔진 서버 Railway 배포 완료 (공개 URL 확보)
 - [ ] NEAR 환경변수 미설정 시 기존 기능 정상 동작 확인
-- [ ] 데모 시나리오 처음부터 끝까지 1회 완주
+- [ ] 데모 시나리오 처음부터 끝까지 1회 완주 (배포 환경 기준)
 
 ---
 
-## 10. Related Documents
+## 11. Related Documents
 
 - **Technical_Specs**: [NEAR Protocol 통합 검토](./03_NEAR_PROTOCOL_ANALYSIS.md) — Part 4 구현 근거, Part 7 SDK 버전
 - **Technical_Specs**: [System Architecture](./02_SYSTEM_ARCHITECTURE.md) — 웹3 인증 설계 원칙
