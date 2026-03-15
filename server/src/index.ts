@@ -29,7 +29,7 @@ app.use(express.json());
 
 // 헬스체크
 app.get('/health', (_req, res) => {
-  res.json({ ok: true, version: '0.3.0' });
+  res.json({ ok: true, version: '0.4.0' });
 });
 
 // 라우터

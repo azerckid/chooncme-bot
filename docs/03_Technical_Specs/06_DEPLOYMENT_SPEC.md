@@ -49,6 +49,7 @@ SMTP_HOST=smtp.gmail.com       # 이메일 알림 (선택)
 SMTP_PORT=587
 SMTP_USER=...
 SMTP_PASS=...
+HUB_PUBLIC_URL=https://chooncme.xyz  # 알림 이메일 본문에 삽입되는 허브 URL
 ```
 
 ### 3.2 `chooncme-hub-server`

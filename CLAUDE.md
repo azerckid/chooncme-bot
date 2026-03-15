@@ -4,8 +4,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Status
 
-**Pre-implementation.** All files are documentation only. No source code exists yet.
-The first task is implementing MVP v0.1 — a terminal CLI agent (`npx chooncme-bot`).
+**v0.4 완료.** v0.1(CLI) → v0.2(sync) → v0.3(hub+matching) → v0.4(notification) 구현 완료.
+다음 구현 대상: v0.5 봇 자율 아바타 (`docs/03_Technical_Specs/05_BOT_PRESENCE_SPEC.md`).
 
 ## What This Project Is
 
@@ -62,6 +62,10 @@ Bot ID must be designed for future Web3 wallet address replacement — use UUID 
 - User can converse with Chunsim in the terminal
 - Conversation context persists within the session
 - `exit` or Ctrl+C exits gracefully with a farewell message
+
+## Conventions
+
+- **이모지**: 코드·터미널 출력·문서에는 사용 금지. 알림 본문·마케팅 카피(notificationService 등 사용자 대상 메시지)는 예외.
 
 ## Key Documents
 

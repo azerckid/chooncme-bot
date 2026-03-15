@@ -29,7 +29,7 @@ ${result.summary}
 ──────────────────────────────
 
 춘심 허브에 접속해서 상대방을 만나보세요!
-http://localhost:3001
+${process.env.HUB_PUBLIC_URL || 'http://localhost:3001'}
 
 – 춘심 허브 팀
 `.trim();
