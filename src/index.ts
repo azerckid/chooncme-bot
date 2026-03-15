@@ -10,12 +10,12 @@ import { ChunSimAgent } from './agent';
 import {
   printHeader,
   printFooter,
-  printChunsim,
   printChunsimStreamStart,
   printChunsimStreamEnd,
   printError,
   printInfo,
 } from './display';
+import { loadMemory, saveMemory, summarizeSession, buildMemoryContext } from './memory';
 
 dotenv.config();
 
@@ -41,6 +41,22 @@ async function greet(agent: ChunSimAgent): Promise<void> {
   printChunsimStreamEnd(fullText);
 }
 
+async function saveSessionMemory(
+  agent: ChunSimAgent,
+  previousMemory: ReturnType<typeof loadMemory>
+): Promise<void> {
+  const history = agent.getHistory();
+  if (history.length < 2) return;
+
+  printInfo('(대화를 기억하는 중...)');
+  try {
+    const updated = await summarizeSession(history, previousMemory);
+    saveMemory(updated);
+  } catch {
+    // 저장 실패해도 사용자 경험에 영향 없음
+  }
+}
+
 async function farewell(agent: ChunSimAgent): Promise<void> {
   printChunsimStreamStart();
   let fullText = '';
@@ -56,9 +72,15 @@ async function main(): Promise<void> {
     process.exit(1);
   }
 
-  const agent = new ChunSimAgent();
+  // 메모리 로드 → 시스템 프롬프트에 주입
+  const memory = loadMemory();
+  const memoryContext = buildMemoryContext(memory);
+  const agent = new ChunSimAgent(memoryContext || undefined);
 
   printHeader();
+  if (memoryContext) {
+    printInfo('(이전 대화 기억을 불러왔어요)');
+  }
   await greet(agent);
 
   const rl = readline.createInterface({
@@ -78,6 +100,7 @@ async function main(): Promise<void> {
       if (trimmed.toLowerCase() === 'exit') {
         rl.close();
         await farewell(agent);
+        await saveSessionMemory(agent, memory);
         printFooter();
         process.exit(0);
       }
@@ -102,6 +125,7 @@ async function main(): Promise<void> {
   // Ctrl+C 처리
   rl.on('close', async () => {
     await farewell(agent);
+    await saveSessionMemory(agent, memory);
     printFooter();
     process.exit(0);
   });
