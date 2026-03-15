@@ -119,7 +119,40 @@
 
 ---
 
-## 미래 버전 아이디어 (v0.3+)
+## 다음 구현 예정 (명세 완료)
+
+### v0.5 — 봇 자율 아바타
+> 명세: [05_BOT_PRESENCE_SPEC.md](../03_Technical_Specs/05_BOT_PRESENCE_SPEC.md)
+
+- [ ] `server/src/services/botPresenceService.ts` — socket.io-client로 허브 자동 접속
+- [ ] POST /sync 완료 시 botPresence 자동 트리거
+- [ ] 봇 자율 이동 (3~8초 간격, 랜덤 waypoint)
+- [ ] `isBot: true` 플래그 허브 서버/클라이언트 반영
+- [ ] MAX_ACTIVE_BOTS 제한 (기본 50)
+
+### v0.6 — 배포
+> 명세: [06_DEPLOYMENT_SPEC.md](../03_Technical_Specs/06_DEPLOYMENT_SPEC.md)
+
+- [ ] Railway — `chooncme-server` (매칭 엔진) 배포
+- [ ] Railway — `chooncme-hub-server` (Socket.io 허브) 배포
+- [ ] Vercel — `chooncme-hub-client` (Next.js) 배포
+- [ ] npm publish — `chooncme-bot` 패키지 공개
+- [ ] 도메인 + CORS 설정
+- [ ] 환경변수 설정 가이드 작성
+
+### v0.7 — 데스크탑 트레이 앱 (Electron)
+> 명세: [07_DESKTOP_APP_SPEC.md](../03_Technical_Specs/07_DESKTOP_APP_SPEC.md)
+
+- [ ] Electron 프로젝트 초기화 (`desktop/`)
+- [ ] 트레이 아이콘 + 메뉴 (대화하기 / 허브 보기 / 종료)
+- [ ] 채팅 창 UI + `src/` 코드 연결
+- [ ] OS 알림 (시작 인사, 매칭 알림, 장기 미접속 알림)
+- [ ] 자동 시작 설정
+- [ ] macOS .dmg 패키징
+
+---
+
+## 미래 버전 아이디어 (미명세)
 
 ### 라이프 패턴 수집 — 칸반 보드
 > 아이디어 출처: 2026-03-14 기획 대화
