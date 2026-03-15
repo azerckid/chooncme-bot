@@ -5,6 +5,7 @@
 import { Router, Request, Response } from 'express';
 import { SyncRequest, ApiResponse, AgentProfile } from '../types';
 import { upsertProfile, getProfile } from '../store/agentStore';
+import { registerBotOnChain } from '../services/nearService';
 
 const router = Router();
 
@@ -24,11 +25,15 @@ router.post('/', (req: Request, res: Response) => {
     sessions: body.sessions ?? [],
     last_synced: new Date().toISOString(),
     owner_email: body.owner_email,
+    nearAccount: body.nearAccount,
   };
 
   upsertProfile(profile);
 
   console.log(`[sync] botId=${body.botId} synced (${profile.sessions.length} sessions)`);
+
+  // NEAR 온체인 봇 등록 (비동기, 실패해도 응답 영향 없음)
+  registerBotOnChain(profile).catch(() => {});
 
   const r: ApiResponse<{ last_synced: string }> = {
     ok: true,

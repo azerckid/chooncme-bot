@@ -19,6 +19,7 @@ export type AgentProfile = {
   sessions: SessionSummary[];
   last_synced: string; // ISO timestamp
   owner_email?: string; // 알림 수신 이메일 (선택)
+  nearAccount?: string; // .near 계정 (claim 방식, v0.8)
 };
 
 // POST /sync 요청 바디
@@ -28,6 +29,7 @@ export type SyncRequest = {
   known_facts: string[];
   sessions: SessionSummary[];
   owner_email?: string; // 알림 수신 이메일 (선택)
+  nearAccount?: string; // .near 계정 (claim 방식, v0.8)
 };
 
 // POST /agent/:botId/chat 요청 바디

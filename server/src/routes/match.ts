@@ -11,6 +11,7 @@ import { getProfile as getAgentProfile } from '../store/agentStore';
 import { saveMatch, getMatchesByBot, updateMatchStatus } from '../store/matchStore';
 import { hardFilter, runBotConversation } from '../engine/matchEngine';
 import { sendMatchNotification } from '../services/notificationService';
+import { recordMatchOnChain } from '../services/nearService';
 import type { MatchResult } from '../store/matchStore';
 
 const router = Router();
@@ -98,6 +99,11 @@ router.post('/start', async (req, res) => {
 
       // v0.4: 알림 발송 (score >= 70 시)
       await sendMatchNotification(final, profileA.owner_email, profileB.owner_email);
+
+      // v0.8: NEAR 온체인 기록 (score >= 70 시, 비동기 silent)
+      if (judgeScore.score >= 70) {
+        recordMatchOnChain(final).catch(() => {});
+      }
     } catch (err) {
       console.error(`[match] 오류: ${err}`);
       updateMatchStatus(matchId, 'failed');
