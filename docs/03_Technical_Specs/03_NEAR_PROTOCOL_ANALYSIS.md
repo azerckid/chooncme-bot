@@ -373,7 +373,7 @@ npm install near-sdk-js
 | 성장 데이터 소유권 | ✅ 선택적 | 요약본만 온체인, 상세는 NEAR Social |
 | NEAR Intents 매칭 | 🔶 흥미로운 아이디어 | v0.3+ 에이전트가 인텐트로 매칭 요청 |
 | Chain Signatures | 🔶 선택적 | 멀티체인 지원 시 필요 |
-| 팬덤 경제 (토큰 인센티브) | 🔶 선택적 | v0.3 이후 고려 |
+| 팬덤 경제 (토큰 인센티브) | 🔶 선택적 | v0.8+ 고려 |
 | NEAR Social 데이터 | 🔶 선택적 | 봇 프로필/이력 저장 용도 |
 | AI 대화 자체 | ❌ 불필요 | 오프체인이어야 함 (Claude API) |
 | 실시간 허브 인터랙션 | ❌ 부적합 | 너무 느리고 비쌈 |
@@ -432,4 +432,12 @@ NEAR의 방향성(AI + Web3, User-Owned AI)이 프로젝트와 매우 잘 맞고
 3. **NEAR AI 생태계 자체가 재편 중** (nearai deprecated, NEAR AI Cloud로 이전) → 안정화 대기 필요
 4. **FastAuth 신버전 미출시** → 이메일 기반 원활한 온보딩이 아직 준비 안 됨
 
-중장기적으로 매력적인 선택이지만, 팬층 UX 검증 전 Web3 의존성을 초기에 도입하는 것은 리스크가 크다. **MVP v0.1은 Web3 없이, Bot ID 인터페이스만 추상화해두고 진행**한다.
+중장기적으로 매력적인 선택이지만, 팬층 UX 검증 전 Web3 의존성을 초기에 도입하는 것은 리스크가 크다. **MVP v0.1은 Web3 없이, Bot ID 인터페이스만 추상화해두고 진행**한다. 현재 로드맵 기준으로는 **v0.1~v0.7은 Web3 없이 진행하며, v0.8에서 NEAR 선택 연동을 검토**한다.
+
+---
+
+## Related Documents
+
+- **Concept_Design**: [Vision & Core Concept](../01_Concept_Design/01_VISION_CORE.md) — 프로젝트 비전 및 봇 ID 소유권 개념
+- **Concept_Design**: [Roadmap](../01_Concept_Design/02_ROADMAP.md) — 전체 버전 로드맵 및 Web3 도입 시점
+- **Technical_Specs**: [System Architecture](./02_SYSTEM_ARCHITECTURE.md) — 웹3 인증 설계 원칙 및 봇 ID 추상화
