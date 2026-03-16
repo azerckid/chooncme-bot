@@ -1,11 +1,12 @@
 "use client";
 
-import React, { useRef, useEffect, useState } from "react";
-import { useFrame } from "@react-three/fiber";
+import React, { useRef, useEffect, useState, useCallback } from "react";
+import { useFrame, ThreeEvent } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 import * as THREE from "three";
 import { Chunsim } from "./Chunsim";
 import { useGameStore } from "@/store/useGameStore";
+import { PlayerProfilePopup } from "@/components/ui/PlayerProfilePopup";
 
 interface OtherPlayerProps {
     id: string;
@@ -21,7 +22,13 @@ export function OtherPlayer({ id, position, action = "Idle", nickname, botId, is
     const badges = botId ? (botBadges[botId] ?? []) : [];
     const groupRef = useRef<THREE.Group>(null);
     const [currentAction, setCurrentAction] = useState(action);
-    const actionRef = useRef(action); // useFrame 내 비교를 위한 Ref
+    const actionRef = useRef(action);
+    const [showProfile, setShowProfile] = useState(false);
+
+    const handleClick = useCallback((e: ThreeEvent<MouseEvent>) => {
+        e.stopPropagation();
+        setShowProfile(true);
+    }, []); // useFrame 내 비교를 위한 Ref
 
     // Lerp (Linear Interpolation)를 위한 목표 위치
     const targetPosition = useRef(new THREE.Vector3(position.x, position.y, position.z));
@@ -75,8 +82,19 @@ export function OtherPlayer({ id, position, action = "Idle", nickname, botId, is
     });
 
     return (
-        <group ref={groupRef}>
+        <group ref={groupRef} onClick={handleClick}>
             <Chunsim action={currentAction} />
+            {showProfile && (
+                <Html center position={[0, 4, 0]}>
+                    <PlayerProfilePopup
+                        id={id}
+                        nickname={nickname}
+                        botId={botId}
+                        isBot={isBot}
+                        onClose={() => setShowProfile(false)}
+                    />
+                </Html>
+            )}
 
             {/* 닉네임 + 뱃지 표시 */}
             <Html distanceFactor={12} position={[0, 2.4, 0]} center>

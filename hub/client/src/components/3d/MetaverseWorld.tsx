@@ -23,6 +23,8 @@ import { useSocket } from "@/hooks/useSocket";
 import { socket } from "@/lib/socket";
 import { SceneLoader } from "./SceneLoader";
 import { SceneLoadingOverlay } from "@/components/ui/SceneLoadingOverlay";
+import { Minimap } from "@/components/ui/Minimap";
+import { SceneNameHUD } from "@/components/ui/SceneNameHUD";
 
 export default function MetaverseWorld() {
     const isStarted = useGameStore((state) => state.isStarted);
@@ -39,7 +41,7 @@ export default function MetaverseWorld() {
     const [interests, setInterests] = useState("");
     const [sceneLoading, setSceneLoading] = useState(false);
     const [sceneLoadingName, setSceneLoadingName] = useState<string | undefined>();
-    const prevSceneRef = React.useRef<string | null>(null);
+    const [currentSceneName, setCurrentSceneName] = useState<string | null>(null);
 
     // Store Actions for Click Move
     const setTargetPosition = useGameStore((state) => state.setTargetPosition);
@@ -56,6 +58,7 @@ export default function MetaverseWorld() {
     const handleSceneLoaded = (name: string) => {
         setSceneLoadingName(name);
         setSceneLoading(false);
+        setCurrentSceneName(name);
     };
 
     const handleJoin = () => {
@@ -261,6 +264,12 @@ export default function MetaverseWorld() {
                     onTimeout={() => setSceneLoading(false)}
                 />
             )}
+
+            {/* 씬 이름 HUD */}
+            {isStarted && <SceneNameHUD sceneName={currentSceneName} />}
+
+            {/* 미니맵 */}
+            {isStarted && <Minimap />}
 
             {/* 관전 모드 — 매칭 진행 중 배너 */}
             {spectatorMatch?.status === 'in_progress' && (

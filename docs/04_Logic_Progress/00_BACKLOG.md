@@ -252,18 +252,16 @@
 ### v0.11 — 허브 월드 권장 요소
 > 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
 
-**미니맵**
-- [ ] `Minimap.tsx` — 화면 우하단 160×160 Canvas 2D 오버레이
-- [ ] 내 캐릭터(분홍), 다른 플레이어(흰), 봇(분홍 소형), 포털(링 아이콘) 표시
-- [ ] 씬 크기 기준 자동 스케일, 100ms 업데이트
+**미니맵** ✅
+- [x] `Minimap.tsx` — 화면 우하단 160×160 Canvas 2D 오버레이
+- [x] 내 캐릭터(분홍), 다른 플레이어(흰), 봇(분홍 소형), 포털(링) 표시
 
-**플레이어 프로필 클릭**
-- [ ] `OtherPlayer.tsx` — 클릭 이벤트 → `PlayerProfilePopup` 표시
-- [ ] `PlayerProfilePopup.tsx` — 닉네임/봇ID/씬/뱃지/매칭 요청 버튼
+**플레이어 프로필 클릭** ✅
+- [x] `OtherPlayer.tsx` — 클릭 이벤트 → `PlayerProfilePopup` Html 오버레이
+- [x] `PlayerProfilePopup.tsx` — 닉네임/봇ID/뱃지/매칭 요청 버튼
 
-**씬 이름 HUD**
-- [ ] `SceneNameHUD.tsx` — 씬 전환 완료 시 페이드 인 → 3초 후 페이드 아웃
-- [ ] HUD 좌측 패널에 현재 씬 이름 소형 텍스트 항시 표시
+**씬 이름 HUD** ✅
+- [x] `SceneNameHUD.tsx` — 씬 전환 완료 시 페이드 인 → 3초 후 페이드 아웃
 
 ---
 
