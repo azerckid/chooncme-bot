@@ -179,55 +179,54 @@
 ### v0.9 — 허브 씬 에디터
 > 명세: [11_SCENE_EDITOR_SPEC.md](../03_Technical_Specs/11_SCENE_EDITOR_SPEC.md)
 
-**v0.9-A — 기본 뷰포트**
-- [ ] `hub/client/src/app/editor/page.tsx` — `/editor` 라우트 생성
-- [ ] `EditorCanvas.tsx` — OrbitControls + Grid + GizmoHelper
+**v0.9-A — 기본 뷰포트** ✅
+- [x] `hub/client/src/app/editor/page.tsx` — `/editor` 라우트 생성
+- [x] `EditorCanvas.tsx` — OrbitControls + Grid + GizmoHelper
 
-**v0.9-B — GLB 임포트 + TransformControls**
-- [ ] 드래그&드롭 / Import 버튼으로 GLB 파일 로드
-- [ ] 선택된 오브젝트에 TransformControls 기즈모 표시
-- [ ] W/E/R 단축키로 translate/rotate/scale 전환
+**v0.9-B — GLB 임포트 + TransformControls** ✅
+- [x] 드래그&드롭 / Import 버튼으로 GLB 파일 로드
+- [x] 선택된 오브젝트에 TransformControls 기즈모 표시
+- [x] W/E/R 단축키로 translate/rotate/scale 전환
 
-**v0.9-C — 씬 패널 + Properties**
-- [ ] `ScenePanel.tsx` — 오브젝트 목록 (선택, 삭제, 복제)
-- [ ] Properties 패널 — 수치 직접 입력 (Position/Rotation/Scale)
+**v0.9-C — 씬 패널 + Properties** ✅
+- [x] `ScenePanel.tsx` — 오브젝트 목록 (선택, 삭제)
+- [x] Properties 패널 — 수치 직접 입력 (Position/Rotation/Scale)
 
-**v0.9-D — 포털 시스템**
-- [ ] [Add Portal] 버튼 → 포털 오브젝트 생성 (분홍 링 표시)
-- [ ] 포털 Properties — target_scene, radius, spawn_position, label
-- [ ] 포털 목록 아이콘 구분 (오브젝트와 분리)
+**v0.9-D — 포털 시스템** ✅
+- [x] [Add Portal] 버튼 → 포털 오브젝트 생성 (분홍 링 표시)
+- [x] 포털 Properties — target_scene, radius, spawn_position, label
+- [x] 포털 목록 아이콘 구분 (오브젝트와 분리)
 
-**v0.9-E — 씬 탭 관리 (다중 씬)**
-- [ ] `SceneTabBar.tsx` — 씬 추가/전환/삭제/이름 변경
-- [ ] 씬별 독립적인 오브젝트+포털 상태 관리
+**v0.9-E — 씬 탭 관리 (다중 씬)** ✅
+- [x] `SceneTabBar.tsx` — 씬 추가/전환/삭제/이름 변경
+- [x] 씬별 독립적인 오브젝트+포털 상태 관리
 
-**v0.9-F — 내보내기/불러오기 + 스냅**
-- [ ] `manifest.json` + `scene_XX.json` Export (브라우저 다운로드)
-- [ ] manifest.json Load → 연결된 씬 파일 순차 로드
-- [ ] 그리드 스냅 ON/OFF 토글
+**v0.9-F — 내보내기/불러오기 + 스냅** ✅
+- [x] `manifest.json` + `scene_XX.json` Export (브라우저 다운로드)
+- [x] manifest.json Load → 연결된 씬 파일 순차 로드
+- [x] 그리드 스냅 ON/OFF 토글
 
-**v0.9-G — 허브 런타임 SceneLoader + 포털**
-- [ ] `SceneLoader.tsx` — manifest.json → 씬 파일 자동 로드
-- [ ] `PortalZone.tsx` — 포털 시각 + 진입 감지 + 페이드 전환 연출
-- [ ] GLB 없을 시 플레이스홀더 박스 표시
+**v0.9-G — 허브 런타임 SceneLoader + 포털** ✅
+- [x] `SceneLoader.tsx` — manifest.json → 씬 파일 자동 로드
+- [x] `PortalZone.tsx` — 포털 시각 + 진입 감지 (플레이어 위치 기반)
+- [x] GLB 없을 시 플레이스홀더 박스 표시
 
-**v0.9-H — 허브 서버 룸 시스템**
-- [ ] `rooms: Record<sceneId, Record<socketId, User>>` 구조로 변경
-- [ ] `changeScene` 이벤트 — 씬 간 이동 처리
-- [ ] 씬 만원 처리 (`MAX_PLAYERS_PER_SCENE`)
-- [ ] 씬별 브로드캐스트 분리 (같은 씬 플레이어에게만 전송)
+**v0.9-H — 허브 서버 룸 시스템** ✅
+- [x] `rooms: Record<sceneId, Record<socketId, User>>` 구조로 변경
+- [x] `changeScene` 이벤트 — 씬 간 이동 처리
+- [x] 씬 만원 처리 (`MAX_PLAYERS_PER_SCENE`)
+- [x] 씬별 브로드캐스트 분리 (같은 씬 플레이어에게만 전송)
 
-**v0.9-I — NavMesh Bake (에디터)**
-- [ ] `@recast-navigation/three` 설치 (hub/client)
-- [ ] [Bake NavMesh] 버튼 — 씬 메쉬 수집 → WASM Bake → 파란 반투명 오버레이 시각화
-- [ ] Bake 파라미터 UI (cellSize, agentHeight, agentRadius 등)
-- [ ] scene_XX.json 내보내기 시 navmesh 필드 포함
-- [ ] 오브젝트 변경 시 "NavMesh 갱신 필요" 경고
+**v0.9-I — NavMesh Bake (에디터)** ✅
+- [x] `@recast-navigation/three` + `@recast-navigation/generators` 설치 (hub/client)
+- [x] [Bake NavMesh] 버튼 — 씬 메쉬 수집 → WASM Bake → 파란 반투명 오버레이 시각화
+- [x] scene_XX.json 내보내기 시 navmesh 필드 포함
+- [x] 오브젝트 변경 시 "NavMesh 갱신 필요" 경고
 
-**v0.9-J — NavMesh 런타임 (봇 이동)**
-- [ ] `@recast-navigation/core` 설치 (server)
-- [ ] `botPresenceService` — navmesh 있으면 경로 계산, 없으면 랜덤 이동 유지
-- [ ] NavMesh 경로(waypoint 배열) 순차 이동으로 장애물 우회
+**v0.9-J — NavMesh 런타임 (봇 이동)** ✅
+- [x] `@recast-navigation/core` 설치 (server)
+- [x] `botPresenceService` — navmesh 있으면 NavMesh vertices 기반 waypoint, 없으면 랜덤 이동 유지
+- [x] scene_id 파라미터 추가 (join 이벤트에 scene_id 전달)
 
 ---
 

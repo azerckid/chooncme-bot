@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@recast-navigation/core": "^0.43.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
     "near-api-js": "^7.2.0",
