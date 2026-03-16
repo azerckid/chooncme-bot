@@ -24,6 +24,7 @@ export interface OtherPlayer {
   action?: string;
   nickname?: string;
   botId?: string;
+  isBot?: boolean;
 }
 
 interface GameState {
@@ -85,7 +86,7 @@ interface GameState {
   setMyNickname: (nickname: string) => void;
   setMyBotId: (botId: string) => void;
   setMyCriteria: (criteria: { region?: string; interests?: string[] }) => void;
-  updateOtherPlayerPosition: (id: string, position: PlayerPosition, action?: string, nickname?: string, botId?: string) => void;
+  updateOtherPlayerPosition: (id: string, position: PlayerPosition, action?: string, nickname?: string, botId?: string, isBot?: boolean) => void;
   removeOtherPlayer: (id: string) => void;
 
   // NEAR 이벤트 액션
@@ -151,7 +152,7 @@ export const useGameStore = create<GameState>()(
     setMyNickname: (nickname) => set({ myNickname: nickname }),
     setMyBotId: (botId) => set({ myBotId: botId }),
     setMyCriteria: (criteria) => set({ myCriteria: criteria }),
-    updateOtherPlayerPosition: (id, position, action = "Idle", nickname, botId) => set((state) => ({
+    updateOtherPlayerPosition: (id, position, action = "Idle", nickname, botId, isBot) => set((state) => ({
       otherPlayers: {
         ...state.otherPlayers,
         [id]: {
@@ -161,6 +162,7 @@ export const useGameStore = create<GameState>()(
           action: action || state.otherPlayers[id]?.action,
           nickname: nickname || state.otherPlayers[id]?.nickname,
           botId: botId || state.otherPlayers[id]?.botId,
+          isBot: isBot ?? state.otherPlayers[id]?.isBot,
         }
       }
     })),

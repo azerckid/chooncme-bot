@@ -179,12 +179,12 @@
 ### v0.5 — 봇 자율 아바타 (v0.8-hackathon 이후)
 > 명세: [05_BOT_PRESENCE_SPEC.md](../03_Technical_Specs/05_BOT_PRESENCE_SPEC.md)
 
-- [ ] `server/src/services/botPresenceService.ts` — socket.io-client로 허브 자동 접속
-- [ ] POST /sync 완료 시 botPresence 자동 트리거
-- [ ] 봇 자율 이동 (3~8초 간격, 랜덤 waypoint)
-- [ ] `isBot: true` 플래그 허브 서버/클라이언트 반영
-- [ ] MAX_ACTIVE_BOTS 제한 (기본 50)
-- [ ] (선택) 허브 클라이언트 봇 시각 구분 — 이름표 색상/아이콘 (명세 §5)
+- [x] `server/src/services/botPresenceService.ts` — socket.io-client로 허브 자동 접속
+- [x] POST /sync 완료 시 botPresence 자동 트리거
+- [x] 봇 자율 이동 (3~8초 간격, 랜덤 waypoint)
+- [x] `isBot: true` 플래그 허브 서버/클라이언트 반영
+- [x] MAX_ACTIVE_BOTS 제한 (기본 50)
+- [x] (선택) 허브 클라이언트 봇 시각 구분 — 이름표 색상/아이콘 (명세 §5)
 
 ### v0.6 — 배포 (v0.8-hackathon 이후)
 > 명세: [06_DEPLOYMENT_SPEC.md](../03_Technical_Specs/06_DEPLOYMENT_SPEC.md)

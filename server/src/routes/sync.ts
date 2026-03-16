@@ -6,6 +6,7 @@ import { Router, Request, Response } from 'express';
 import { SyncRequest, ApiResponse, AgentProfile } from '../types';
 import { upsertProfile, getProfile } from '../store/agentStore';
 import { registerBotOnChain } from '../services/nearService';
+import { connectBot } from '../services/botPresenceService';
 
 const router = Router();
 
@@ -34,6 +35,10 @@ router.post('/', (req: Request, res: Response) => {
 
   // NEAR 온체인 봇 등록 (비동기, 실패해도 응답 영향 없음)
   registerBotOnChain(profile).catch(() => {});
+
+  // 봇 자율 아바타 — 허브에 자동 접속 (주인 오프라인 대리)
+  const botNickname = `[봇] ${profile.owner_summary.slice(0, 10) || profile.botId.slice(0, 8)}`;
+  connectBot(profile.botId, botNickname).catch(() => {});
 
   const r: ApiResponse<{ last_synced: string }> = {
     ok: true,

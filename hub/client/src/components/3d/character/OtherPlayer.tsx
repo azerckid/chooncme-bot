@@ -13,9 +13,10 @@ interface OtherPlayerProps {
     action?: string;
     nickname?: string;
     botId?: string;
+    isBot?: boolean;
 }
 
-export function OtherPlayer({ id, position, action = "Idle", nickname, botId }: OtherPlayerProps) {
+export function OtherPlayer({ id, position, action = "Idle", nickname, botId, isBot = false }: OtherPlayerProps) {
     const botBadges = useGameStore((state) => state.botBadges);
     const badges = botId ? (botBadges[botId] ?? []) : [];
     const groupRef = useRef<THREE.Group>(null);
@@ -94,8 +95,14 @@ export function OtherPlayer({ id, position, action = "Idle", nickname, botId }: 
                             ))}
                         </div>
                     )}
-                    <div className="px-2 py-1 bg-black/60 text-white/90 backdrop-blur-md rounded-md text-[10px] font-bold font-mono border border-white/10 shadow-lg whitespace-nowrap">
-                        {nickname || id.slice(0, 5)}
+                    <div
+                        className="px-2 py-1 backdrop-blur-md rounded-md text-[10px] font-bold font-mono shadow-lg whitespace-nowrap"
+                        style={isBot
+                            ? { background: "rgba(236,72,153,0.18)", color: "#f9a8d4", border: "1px solid rgba(236,72,153,0.35)" }
+                            : { background: "rgba(0,0,0,0.60)", color: "rgba(255,255,255,0.90)", border: "1px solid rgba(255,255,255,0.10)" }
+                        }
+                    >
+                        {isBot ? "🤖 " : ""}{nickname || id.slice(0, 5)}
                     </div>
                 </div>
             </Html>

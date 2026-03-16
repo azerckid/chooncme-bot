@@ -34,6 +34,7 @@ interface User {
   position: UserPosition;
   nickname?: string;
   botId?: string;       // 춘심봇 ID (UUID)
+  isBot?: boolean;      // true: 자율 아바타 봇 (주인 오프라인)
   criteria?: MatchCriteria; // 매칭 조건
 }
 
@@ -169,12 +170,14 @@ io.on("connection", (socket) => {
   socket.on("join", async (data: {
     nickname: string;
     botId?: string;
+    isBot?: boolean;
     criteria?: MatchCriteria;
   }) => {
     const newUser: User = {
       id: socket.id,
       nickname: data.nickname,
       botId: data.botId,
+      isBot: data.isBot ?? false,
       criteria: data.criteria,
       position: {
         x: (Math.random() - 0.5) * 10,
@@ -189,7 +192,8 @@ io.on("connection", (socket) => {
     // 다른 사람들에게 알림
     socket.broadcast.emit("playerJoined", newUser);
 
-    console.log(`[hub] 참여: ${data.nickname} (socket=${socket.id}, bot=${data.botId || "없음"})`);
+    const botLabel = data.isBot ? " [자율봇]" : "";
+    console.log(`[hub] 참여: ${data.nickname}${botLabel} (socket=${socket.id}, bot=${data.botId || "없음"})`);
 
     // 매칭 엔진에 허브 등록
     if (data.botId) {

@@ -92,7 +92,8 @@ export default function MetaverseWorld() {
                                 position={player.position}
                                 action={player.action}
                                 nickname={player.nickname}
-                                botId={(player as any).botId}
+                                botId={player.botId}
+                                isBot={player.isBot}
                             />
                         ))}
 

@@ -55,7 +55,7 @@ export function useSocket() {
         // 서버 코드 기준: playerJoined 이벤트 (새로운 유저 입장)
         const onPlayerJoined = (user: any) => {
             console.log("Player Joined:", user);
-            updateOtherPlayerPosition(user.id, user.position, user.action, user.nickname, user.botId);
+            updateOtherPlayerPosition(user.id, user.position, user.action, user.nickname, user.botId, user.isBot);
         };
 
         // 서버 코드 기준: playerMoved 이벤트
