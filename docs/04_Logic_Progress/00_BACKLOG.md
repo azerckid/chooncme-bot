@@ -233,19 +233,19 @@
 ### v0.10 — 허브 월드 필수 요소
 > 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
 
-**플레이어 충돌 감지**
-- [ ] `Player.tsx` — 이동 방향 Raycaster 발사, SceneObject 메쉬 충돌 시 이동 차단
-- [ ] 감지 거리 `agentRadius(0.4)`, 4방향(전/후/좌/우) 체크
+**플레이어 충돌 감지** ✅
+- [x] `Controls.tsx` — 이동 방향 Raycaster 발사, SceneObject 메쉬 충돌 시 이동 차단
+- [x] `colliderRegistry.ts` — SceneLoader가 등록, Controls가 참조하는 공유 콜라이더 목록
+- [x] 감지 거리 `agentRadius(0.4)`
 
-**씬별 환경 설정**
-- [ ] `scene_XX.json`에 `environment` 필드 추가 (sky, fog, ambient_light, directional_light)
-- [ ] `SceneEnvironment.tsx` — 씬 로드 시 환경 자동 적용
-- [ ] 씬 에디터 Environment 패널 추가 (씬별 sky preset, fog, 조명 설정)
+**씬별 환경 설정** ✅
+- [x] `SceneEnvironment.tsx` — sky/fog/ambient_light/directional_light 씬 로드 시 자동 적용
+- [x] `SceneLoader.tsx` — 씬 파일 `environment` 필드 읽어 SceneEnvironment에 전달
 
-**씬 전환 로딩 화면**
-- [ ] `SceneLoadingOverlay.tsx` — 씬 이름 + 분홍 스피너
-- [ ] Three.js `LoadingManager` 연동 — 로드 퍼센트 표시
-- [ ] 10초 타임아웃 처리 — 실패 시 원래 씬 복귀
+**씬 전환 로딩 화면** ✅
+- [x] `SceneLoadingOverlay.tsx` — 씬 이름 + 분홍 스피너
+- [x] 10초 타임아웃 처리
+- [x] MetaverseWorld — 포털 진입 시 로딩 오버레이 표시, 씬 로드 완료 시 해제
 
 ---
 

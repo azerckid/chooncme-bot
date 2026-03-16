@@ -5,6 +5,19 @@ import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useGameStore } from "@/store/useGameStore";
+import { getColliders } from "@/lib/colliderRegistry";
+
+const AGENT_RADIUS = 0.4;
+const raycaster = new THREE.Raycaster();
+
+function isBlocked(origin: THREE.Vector3, direction: THREE.Vector3): boolean {
+    const colliders = getColliders();
+    if (colliders.length === 0) return false;
+    raycaster.set(origin, direction.clone().normalize());
+    raycaster.far = AGENT_RADIUS;
+    const hits = raycaster.intersectObjects(colliders, true);
+    return hits.length > 0;
+}
 
 interface ControlsProps {
     model: React.RefObject<THREE.Group | null>;
@@ -107,6 +120,16 @@ export function Controls({ model }: ControlsProps) {
         }
 
         // C. 위치 업데이트 공통 로직
+        if (moveX !== 0 || moveZ !== 0) {
+            // 충돌 감지 — 이동 방향으로 Raycaster 발사
+            const origin = new THREE.Vector3(playerPosition.x, 0.5, playerPosition.z);
+            const moveDir = new THREE.Vector3(-moveX, 0, -moveZ).normalize();
+            if (isBlocked(origin, moveDir)) {
+                moveX = 0;
+                moveZ = 0;
+            }
+        }
+
         if (moveX !== 0 || moveZ !== 0) {
             const nextX = playerPosition.x - moveX;
             const nextZ = playerPosition.z - moveZ;

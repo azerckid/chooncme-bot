@@ -21,6 +21,8 @@ import { ChatSystem } from "@/components/ui/ChatSystem";
 import { Loader } from "@/components/ui/Loader";
 import { useSocket } from "@/hooks/useSocket";
 import { socket } from "@/lib/socket";
+import { SceneLoader } from "./SceneLoader";
+import { SceneLoadingOverlay } from "@/components/ui/SceneLoadingOverlay";
 
 export default function MetaverseWorld() {
     const isStarted = useGameStore((state) => state.isStarted);
@@ -35,6 +37,9 @@ export default function MetaverseWorld() {
     const [botId, setBotId] = useState("");
     const [region, setRegion] = useState("");
     const [interests, setInterests] = useState("");
+    const [sceneLoading, setSceneLoading] = useState(false);
+    const [sceneLoadingName, setSceneLoadingName] = useState<string | undefined>();
+    const prevSceneRef = React.useRef<string | null>(null);
 
     // Store Actions for Click Move
     const setTargetPosition = useGameStore((state) => state.setTargetPosition);
@@ -42,6 +47,16 @@ export default function MetaverseWorld() {
 
     // 소켓 연결 활성화
     useSocket();
+
+    const handleChangeScene = (targetScene: string, spawnPosition: [number, number, number]) => {
+        setSceneLoading(true);
+        socket.emit("changeScene", { target_scene: targetScene, spawn_position: spawnPosition });
+    };
+
+    const handleSceneLoaded = (name: string) => {
+        setSceneLoadingName(name);
+        setSceneLoading(false);
+    };
 
     const handleJoin = () => {
         if (!nickname.trim()) return;
@@ -83,6 +98,12 @@ export default function MetaverseWorld() {
 
                         <GroupCube />
                         <NearMemoryBank />
+
+                        {/* 씬 에디터로 구성된 씬 로드 (manifest.json 있을 때만) */}
+                        <SceneLoader
+                            onChangeScene={handleChangeScene}
+                            onSceneLoaded={handleSceneLoaded}
+                        />
                         <Player nickname={nickname} />
                         {/* 다른 유저들 렌더링 */}
                         {Object.values(otherPlayers).map((player) => (
@@ -232,6 +253,14 @@ export default function MetaverseWorld() {
 
             {isStarted && <LightingControlPanel />}
             {isStarted && <ChatSystem />}
+
+            {/* 씬 전환 로딩 오버레이 */}
+            {sceneLoading && (
+                <SceneLoadingOverlay
+                    sceneName={sceneLoadingName}
+                    onTimeout={() => setSceneLoading(false)}
+                />
+            )}
 
             {/* 관전 모드 — 매칭 진행 중 배너 */}
             {spectatorMatch?.status === 'in_progress' && (

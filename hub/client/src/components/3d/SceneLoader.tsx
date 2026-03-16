@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect, useState, Suspense } from "react";
-import { useLoader } from "@react-three/fiber";
+import React, { useEffect, useState, Suspense, useRef } from "react";
+import { useLoader, useThree } from "@react-three/fiber";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader.js";
-import { Html } from "@react-three/drei";
+import * as THREE from "three";
 import { PortalZone } from "./PortalZone";
+import { SceneEnvironment, SceneEnvironmentConfig } from "./SceneEnvironment";
+import { registerColliders, clearColliders } from "@/lib/colliderRegistry";
 
 interface SceneObject {
     id: string;
@@ -30,6 +32,7 @@ interface SceneFile {
     name: string;
     objects: SceneObject[];
     portals: Portal[];
+    environment?: SceneEnvironmentConfig;
 }
 
 interface SceneManifest {
@@ -38,15 +41,36 @@ interface SceneManifest {
     scenes: { id: string; name: string; file: string }[];
 }
 
-function GLBObject({ obj }: { obj: SceneObject }) {
+// ── GLB 오브젝트 컴포넌트 ────────────────────────────────────────────────────
+
+function GLBObject({
+    obj,
+    onMeshReady,
+}: {
+    obj: SceneObject;
+    onMeshReady: (meshes: THREE.Mesh[]) => void;
+}) {
     const gltf = useLoader(GLTFLoader, obj.src);
+    const groupRef = useRef<THREE.Group>(null!);
+
+    useEffect(() => {
+        if (!groupRef.current) return;
+        const meshes: THREE.Mesh[] = [];
+        groupRef.current.traverse((child) => {
+            if (child instanceof THREE.Mesh) meshes.push(child);
+        });
+        onMeshReady(meshes);
+    }, [gltf, onMeshReady]);
+
     return (
-        <primitive
-            object={gltf.scene.clone()}
+        <group
+            ref={groupRef}
             position={obj.position}
             rotation={obj.rotation}
             scale={obj.scale}
-        />
+        >
+            <primitive object={gltf.scene.clone()} />
+        </group>
     );
 }
 
@@ -59,16 +83,26 @@ function FallbackBox({ obj }: { obj: SceneObject }) {
     );
 }
 
+// ── SceneLoader ──────────────────────────────────────────────────────────────
+
 interface SceneLoaderProps {
     onChangeScene?: (targetScene: string, spawnPosition: [number, number, number]) => void;
+    onSceneLoaded?: (sceneName: string) => void;
 }
 
-export function SceneLoader({ onChangeScene }: SceneLoaderProps) {
+export function SceneLoader({ onChangeScene, onSceneLoaded }: SceneLoaderProps) {
     const [manifest, setManifest] = useState<SceneManifest | null>(null);
     const [sceneData, setSceneData] = useState<SceneFile | null>(null);
-    const [currentSceneId, setCurrentSceneId] = useState<string | null>(null);
+    const colliderMeshes = useRef<Map<string, THREE.Mesh[]>>(new Map());
 
-    // manifest 로드
+    // 충돌 메쉬 수집 후 레지스트리 갱신
+    const handleMeshReady = (objId: string, meshes: THREE.Mesh[]) => {
+        colliderMeshes.current.set(objId, meshes);
+        const all: THREE.Mesh[] = [];
+        colliderMeshes.current.forEach((m) => all.push(...m));
+        registerColliders(all);
+    };
+
     useEffect(() => {
         fetch("/scenes/manifest.json")
             .then((r) => r.json())
@@ -77,9 +111,7 @@ export function SceneLoader({ onChangeScene }: SceneLoaderProps) {
                 return m;
             })
             .then((m) => loadScene(m.default_scene, m))
-            .catch(() => {
-                // manifest 없으면 기존 하드코딩 씬 유지
-            });
+            .catch(() => {});
     }, []);
 
     const loadScene = async (sceneId: string, m?: SceneManifest) => {
@@ -87,17 +119,25 @@ export function SceneLoader({ onChangeScene }: SceneLoaderProps) {
         if (!mfst) return;
         const meta = mfst.scenes.find((s) => s.id === sceneId);
         if (!meta) return;
+
+        // 씬 전환 시 충돌 메쉬 초기화
+        colliderMeshes.current.clear();
+        clearColliders();
+
         try {
             const res = await fetch(meta.file);
             const data: SceneFile = await res.json();
             setSceneData(data);
-            setCurrentSceneId(sceneId);
+            onSceneLoaded?.(data.name);
         } catch {
             console.error("씬 로드 실패:", meta.file);
         }
     };
 
-    const handlePortalEnter = (targetScene: string, spawnPosition: [number, number, number]) => {
+    const handlePortalEnter = (
+        targetScene: string,
+        spawnPosition: [number, number, number]
+    ) => {
         onChangeScene?.(targetScene, spawnPosition);
         loadScene(targetScene);
     };
@@ -106,14 +146,20 @@ export function SceneLoader({ onChangeScene }: SceneLoaderProps) {
 
     return (
         <>
-            {/* 오브젝트 렌더링 */}
+            {/* 씬별 환경 */}
+            <SceneEnvironment config={sceneData.environment} />
+
+            {/* 오브젝트 */}
             {sceneData.objects.map((obj) => (
                 <Suspense key={obj.id} fallback={<FallbackBox obj={obj} />}>
-                    <GLBObject obj={obj} />
+                    <GLBObject
+                        obj={obj}
+                        onMeshReady={(meshes) => handleMeshReady(obj.id, meshes)}
+                    />
                 </Suspense>
             ))}
 
-            {/* 포털 렌더링 */}
+            {/* 포털 */}
             {sceneData.portals.map((portal) => (
                 <PortalZone
                     key={portal.id}
