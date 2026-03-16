@@ -217,6 +217,18 @@
 - [ ] 씬 만원 처리 (`MAX_PLAYERS_PER_SCENE`)
 - [ ] 씬별 브로드캐스트 분리 (같은 씬 플레이어에게만 전송)
 
+**v0.9-I — NavMesh Bake (에디터)**
+- [ ] `@recast-navigation/three` 설치 (hub/client)
+- [ ] [Bake NavMesh] 버튼 — 씬 메쉬 수집 → WASM Bake → 파란 반투명 오버레이 시각화
+- [ ] Bake 파라미터 UI (cellSize, agentHeight, agentRadius 등)
+- [ ] scene_XX.json 내보내기 시 navmesh 필드 포함
+- [ ] 오브젝트 변경 시 "NavMesh 갱신 필요" 경고
+
+**v0.9-J — NavMesh 런타임 (봇 이동)**
+- [ ] `@recast-navigation/core` 설치 (server)
+- [ ] `botPresenceService` — navmesh 있으면 경로 계산, 없으면 랜덤 이동 유지
+- [ ] NavMesh 경로(waypoint 배열) 순차 이동으로 장애물 우회
+
 ---
 
 ### v0.5 — 봇 자율 아바타 (v0.8-hackathon 이후)

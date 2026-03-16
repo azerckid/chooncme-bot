@@ -6,6 +6,7 @@
 
 > 상태: 명세 작성 완료. 구현 대상: v0.9
 > v0.9-rev1: 다중 씬 + 포털 시스템 + 서버 룸 구조 추가
+> v0.9-rev2: NavMesh Bake 기능 추가
 
 ---
 
@@ -447,15 +448,93 @@ hub/client/
 
 ---
 
-## 12. 의존성
+## 12. NavMesh Bake
 
-| 패키지 | 용도 | 설치 여부 |
+### 12.1 개요
+
+씬에 건물/장애물을 배치한 뒤 [Bake NavMesh] 버튼을 누르면, 씬의 모든 메쉬를 분석해서 캐릭터가 걸을 수 있는 영역(NavMesh)을 자동 계산한다. 결과는 씬 파일에 포함되어 런타임 봇 이동 경로에 활용된다.
+
+사용 엔진: `recast-navigation-js` — Recast/Detour(Unity/Unreal과 동일한 업계 표준)의 WebAssembly 포트. 브라우저에서 직접 실행된다.
+
+### 12.2 Bake 흐름
+
+```
+에디터에서 GLB 오브젝트 배치 완료
+  → [Bake NavMesh] 버튼 클릭
+    → 씬 내 모든 SceneObject의 Three.js Mesh geometry 수집
+      → recast-navigation-js WASM으로 NavMesh 계산
+        → 결과를 파란 반투명 메쉬로 뷰포트에 시각화
+          → scene_XX.json의 navmesh 필드에 직렬화하여 포함
+```
+
+### 12.3 Bake 파라미터
+
+에디터 UI에서 조절 가능한 파라미터:
+
+| 파라미터 | 설명 | 기본값 |
 | :--- | :--- | :--- |
-| `@react-three/drei` | TransformControls, OrbitControls, Grid, GizmoHelper, Html | 기설치 |
-| `three` | GLTFLoader, raycaster | 기설치 |
-| `uuid` | 오브젝트/포털 ID 생성 | 확인 필요 |
+| `cellSize` | NavMesh 해상도 (작을수록 정밀, 느림) | 0.3 |
+| `cellHeight` | 수직 해상도 | 0.2 |
+| `agentHeight` | 캐릭터 키 | 1.8 |
+| `agentRadius` | 캐릭터 반경 (장애물 여유 거리) | 0.4 |
+| `agentMaxClimb` | 오를 수 있는 최대 계단 높이 | 0.4 |
+| `agentMaxSlope` | 걸을 수 있는 최대 경사 (도) | 45 |
 
-추가 설치 불필요.
+### 12.4 scene_XX.json 확장 스키마
+
+```typescript
+interface SceneFile {
+  // ... 기존 필드 유지
+  navmesh?: NavMeshData;   // Bake 완료 시 포함, 없으면 봇 랜덤 이동 유지
+}
+
+interface NavMeshData {
+  baked_at: string;                  // ISO timestamp
+  params: NavMeshBakeParams;         // Bake에 사용된 파라미터
+  vertices: number[];                // Float32Array 직렬화 (x,y,z 반복)
+  indices: number[];                 // 삼각형 인덱스
+}
+```
+
+### 12.5 에디터 시각화
+
+| 상태 | 표현 |
+| :--- | :--- |
+| Bake 전 | NavMesh 없음 |
+| Bake 중 | 툴바에 "Baking..." 스피너 |
+| Bake 완료 | 걸을 수 있는 영역: 파란 반투명 메쉬 오버레이 |
+| NavMesh 초기화 | [Clear NavMesh] 버튼으로 제거 |
+
+GLB 오브젝트를 추가/이동/삭제하면 기존 NavMesh가 무효화되었음을 툴바에 경고 표시 ("NavMesh 갱신 필요").
+
+### 12.6 런타임 봇 이동 연동
+
+허브 서버의 `botPresenceService`가 씬 파일에 `navmesh`가 있으면 NavMesh 기반 경로로 이동하고, 없으면 기존 랜덤 이동을 유지한다.
+
+```
+scene_XX.json 로드
+  → navmesh 있음:
+      → @recast-navigation/core로 NavMesh 초기화
+        → 목적지 선택 시 NavMesh.computePath(현재위치, 목적지)
+          → 경로(waypoint 배열) 반환
+            → 순차적으로 이동 (장애물 우회)
+  → navmesh 없음:
+      → 기존 랜덤 이동 유지 (하위 호환)
+```
+
+경로 계산은 서버(`botPresenceService`)에서 수행한다. `@recast-navigation/core`는 Node.js에서도 실행된다.
+
+---
+
+## 13. 의존성
+
+| 패키지 | 용도 | 설치 위치 | 설치 여부 |
+| :--- | :--- | :--- | :--- |
+| `@react-three/drei` | TransformControls, OrbitControls, Grid, GizmoHelper, Html | hub/client | 기설치 |
+| `three` | GLTFLoader, raycaster | hub/client | 기설치 |
+| `uuid` | 오브젝트/포털 ID 생성 | hub/client | 확인 필요 |
+| `@recast-navigation/three` | NavMesh Bake + Three.js 시각화 | hub/client | 신규 설치 필요 |
+| `@recast-navigation/core` | NavMesh 경로 계산 (런타임) | server | 신규 설치 필요 |
 
 ---
 
@@ -471,6 +550,8 @@ hub/client/
 | **v0.9-F** | manifest.json + scene_XX.json 내보내기/불러오기 + 그리드 스냅 |
 | **v0.9-G** | 허브 런타임: SceneLoader + PortalZone + 씬 전환 연출 |
 | **v0.9-H** | 허브 서버: rooms 룸 시스템 + changeScene 이벤트 + 씬 만원 처리 |
+| **v0.9-I** | NavMesh Bake: 에디터 Bake UI + 시각화, scene_XX.json navmesh 필드 내보내기 |
+| **v0.9-J** | NavMesh 런타임: botPresenceService NavMesh 경로 기반 이동 (장애물 우회) |
 
 ---
 
