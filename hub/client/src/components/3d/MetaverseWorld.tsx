@@ -25,6 +25,7 @@ import { SceneLoader } from "./SceneLoader";
 import { SceneLoadingOverlay } from "@/components/ui/SceneLoadingOverlay";
 import { Minimap } from "@/components/ui/Minimap";
 import { SceneNameHUD } from "@/components/ui/SceneNameHUD";
+import { VirtualJoystick } from "@/components/ui/VirtualJoystick";
 
 export default function MetaverseWorld() {
     const isStarted = useGameStore((state) => state.isStarted);
@@ -270,6 +271,9 @@ export default function MetaverseWorld() {
 
             {/* 미니맵 */}
             {isStarted && <Minimap />}
+
+            {/* 모바일 가상 조이스틱 (터치 기기 자동 감지) */}
+            {isStarted && <VirtualJoystick />}
 
             {/* 관전 모드 — 매칭 진행 중 배너 */}
             {spectatorMatch?.status === 'in_progress' && (

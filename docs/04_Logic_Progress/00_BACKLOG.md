@@ -268,15 +268,14 @@
 ### v0.12 — 허브 월드 선택 A
 > 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
 
-**모바일 가상 조이스틱**
-- [ ] `nipplejs` 설치
-- [ ] `VirtualJoystick.tsx` — 터치 기기 자동 감지, 좌하단 표시
-- [ ] 조이스틱 출력 → 기존 `keyPressed` 상태 매핑
+**모바일 가상 조이스틱** ✅
+- [x] `nipplejs` 설치
+- [x] `VirtualJoystick.tsx` — 터치 기기 자동 감지, 좌하단 표시
+- [x] 조이스틱 출력 → `keyPressed` 상태 매핑 (대각선 포함)
 
-**공간 오디오**
-- [ ] Three.js `PositionalAudio` — 거리 기반 볼륨 감쇠
-- [ ] `scene_XX.json`에 `environment.bgm` 필드 추가
-- [ ] 포털 진입음, 매칭 알림음 추가
+**공간 오디오** ✅
+- [x] `PositionalAudioZone.tsx` — Three.js PositionalAudio 거리 기반 볼륨 감쇠
+- [x] `SceneEnvironment.tsx` — `environment.bgm` 필드로 씬별 BGM 설정
 
 ---
 

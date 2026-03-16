@@ -2,6 +2,7 @@
 
 import React from "react";
 import { Environment } from "@react-three/drei";
+import { PositionalAudioZone } from "./environment/PositionalAudioZone";
 import { useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
@@ -24,6 +25,13 @@ export interface SceneEnvironmentConfig {
         position: [number, number, number];
     };
     background_color?: string;
+    bgm?: {
+        src: string;
+        position?: [number, number, number];
+        refDistance?: number;
+        maxDistance?: number;
+        volume?: number;
+    };
 }
 
 interface Props {
@@ -65,6 +73,15 @@ export function SceneEnvironment({ config }: Props) {
                 position={config?.directional_light?.position ?? [10, 10, 5]}
                 castShadow
             />
+            {config?.bgm?.src && (
+                <PositionalAudioZone
+                    src={config.bgm.src}
+                    position={config.bgm.position ?? [0, 0, 0]}
+                    refDistance={config.bgm.refDistance}
+                    maxDistance={config.bgm.maxDistance}
+                    volume={config.bgm.volume}
+                />
+            )}
         </>
     );
 }
