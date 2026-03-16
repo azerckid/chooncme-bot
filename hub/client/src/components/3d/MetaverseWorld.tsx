@@ -36,6 +36,8 @@ export default function MetaverseWorld() {
     const setMyNickname = useGameStore((state) => state.setMyNickname);
     const setMyBotId = useGameStore((state) => state.setMyBotId);
     const setMyCriteria = useGameStore((state) => state.setMyCriteria);
+    const setAvatarColor = useGameStore((state) => state.setAvatarColor);
+    const avatarColor = useGameStore((state) => state.avatarColor);
     const [nickname, setNickname] = useState("");
     const [botId, setBotId] = useState("");
     const [region, setRegion] = useState("");
@@ -185,6 +187,23 @@ export default function MetaverseWorld() {
                                     className="flex-1 h-10 px-4 bg-zinc-900/30 border border-white/5 rounded-full text-center text-white text-sm placeholder:text-zinc-700 focus:outline-none focus:border-pink-500/30 transition-all"
                                 />
                             </div>
+                            {/* 아바타 색상 선택 */}
+                            <div className="flex items-center gap-2 w-full justify-center">
+                                <span className="text-[10px] text-zinc-600 font-mono uppercase tracking-wider">Avatar</span>
+                                {["#ff6eb4","#4dff91","#4d91ff","#ffd700","#ff6b35","#c084fc"].map((c) => (
+                                    <button
+                                        key={c}
+                                        onClick={() => setAvatarColor(c)}
+                                        className="w-6 h-6 rounded-full transition-transform hover:scale-110"
+                                        style={{
+                                            background: c,
+                                            border: avatarColor === c ? "2px solid white" : "2px solid transparent",
+                                            boxShadow: avatarColor === c ? `0 0 8px ${c}` : "none",
+                                        }}
+                                    />
+                                ))}
+                            </div>
+
                             <Button
                                 size="lg"
                                 onClick={handleJoin}

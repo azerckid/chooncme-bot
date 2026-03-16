@@ -279,21 +279,21 @@
 
 ---
 
-### v0.13 — 허브 월드 선택 B
+### v0.13 — 허브 월드 선택 B ✅
 > 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
 
-**캐릭터 커스터마이징**
-- [ ] Three.js Material 색조 오버레이 (상의/하의 색상)
-- [ ] `config.json`에 `avatar_color` 필드 추가
-- [ ] `join` 이벤트에 `avatar_color` 포함 → 다른 클라이언트 반영
+**캐릭터 커스터마이징** ✅
+- [x] Three.js Material 색조 오버레이 (Chunsim.tsx avatarColor → material.clone())
+- [x] `avatarColor` 필드 useGameStore 추가 (기본값 `#ff6eb4`)
+- [x] 입장 화면 6색 팔레트 → avatarColor 선택 → Player → Chunsim 전달
 
-**근거리 채팅**
-- [ ] 허브 서버: 채팅 발신자 기준 15 units 이내 플레이어만 필터 전달
-- [ ] `/all` 접두사 시 씬 전체 브로드캐스트 유지
+**근거리 채팅** ✅
+- [x] 허브 서버: 채팅 발신자 기준 15 units 이내 플레이어만 필터 전달
+- [x] `/all` 접두사 시 씬 전체 브로드캐스트 유지
 
-**카메라 모드 전환**
-- [ ] `V` 키: 3인칭 ↔ 1인칭 토글
-- [ ] `F` 키: 자유 카메라 모드 (OrbitControls 활성)
+**카메라 모드 전환** ✅
+- [x] `V` 키: 3인칭 ↔ 1인칭 토글
+- [x] `F` 키: 자유 카메라 모드 (OrbitControls 패닝 활성화, maxDistance=100)
 
 ---
 

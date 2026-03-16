@@ -50,6 +50,7 @@ interface GameState {
   myNickname: string;
   myBotId: string;
   myCriteria: { region?: string; interests?: string[] };
+  avatarColor: string;
 
   // NEAR 이벤트 상태
   nearAnnouncement: string | null;
@@ -86,6 +87,7 @@ interface GameState {
   setMyNickname: (nickname: string) => void;
   setMyBotId: (botId: string) => void;
   setMyCriteria: (criteria: { region?: string; interests?: string[] }) => void;
+  setAvatarColor: (color: string) => void;
   updateOtherPlayerPosition: (id: string, position: PlayerPosition, action?: string, nickname?: string, botId?: string, isBot?: boolean) => void;
   removeOtherPlayer: (id: string) => void;
 
@@ -122,6 +124,7 @@ export const useGameStore = create<GameState>()(
     myNickname: "",
     myBotId: "",
     myCriteria: {},
+    avatarColor: "#ff6eb4",
 
     nearAnnouncement: null,
     bankGlowing: false,
@@ -152,6 +155,7 @@ export const useGameStore = create<GameState>()(
     setMyNickname: (nickname) => set({ myNickname: nickname }),
     setMyBotId: (botId) => set({ myBotId: botId }),
     setMyCriteria: (criteria) => set({ myCriteria: criteria }),
+    setAvatarColor: (color) => set({ avatarColor: color }),
     updateOtherPlayerPosition: (id, position, action = "Idle", nickname, botId, isBot) => set((state) => ({
       otherPlayers: {
         ...state.otherPlayers,

@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useRef } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
 import { useFrame, useThree } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import { useGameStore } from "@/store/useGameStore";
 import { getColliders } from "@/lib/colliderRegistry";
+
+type CameraMode = "third" | "first" | "free";
 
 const AGENT_RADIUS = 0.4;
 const raycaster = new THREE.Raycaster();
@@ -26,6 +28,22 @@ interface ControlsProps {
 export function Controls({ model }: ControlsProps) {
     const orbitRef = useRef<any>(null);
     const { camera } = useThree();
+    const [cameraMode, setCameraMode] = useState<CameraMode>("third");
+
+    // V: 3인칭 ↔ 1인칭, F: 자유 카메라
+    useEffect(() => {
+        const handler = (e: KeyboardEvent) => {
+            if (e.target instanceof HTMLInputElement || e.target instanceof HTMLSelectElement) return;
+            if (e.key === "v" || e.key === "V") {
+                setCameraMode((m) => m === "third" ? "first" : "third");
+            }
+            if (e.key === "f" || e.key === "F") {
+                setCameraMode((m) => m === "free" ? "third" : "free");
+            }
+        };
+        window.addEventListener("keydown", handler);
+        return () => window.removeEventListener("keydown", handler);
+    }, []);
 
     // 내부 연산용 벡터들 (메모리 최적화)
     const walkDirection = useRef(new THREE.Vector3()).current;
@@ -119,6 +137,9 @@ export function Controls({ model }: ControlsProps) {
             }
         }
 
+        // 자유 카메라 모드: 이동 입력 무시
+        if (cameraMode === "free") return;
+
         // C. 위치 업데이트 공통 로직
         if (moveX !== 0 || moveZ !== 0) {
             // 충돌 감지 — 이동 방향으로 Raycaster 발사
@@ -142,13 +163,22 @@ export function Controls({ model }: ControlsProps) {
             // 모델 위치 강제 업데이트
             model.current.position.set(nextX, playerPosition.y, nextZ);
 
-            // 카메라 이동 (캐릭터를 따라감)
-            camera.position.x -= moveX;
-            camera.position.z -= moveZ;
-
-            // OrbitControls 타겟 업데이트 (캐릭터 머리 위)
-            orbitRef.current.target.set(nextX, playerPosition.y + 1.5, nextZ);
-            orbitRef.current.update();
+            if (cameraMode === "first") {
+                // 1인칭: 카메라를 캐릭터 눈 위치로
+                camera.position.set(nextX, playerPosition.y + 1.6, nextZ);
+                if (orbitRef.current) {
+                    orbitRef.current.target.set(nextX, playerPosition.y + 1.6, nextZ - 1);
+                    orbitRef.current.update();
+                }
+            } else {
+                // 3인칭
+                camera.position.x -= moveX;
+                camera.position.z -= moveZ;
+                if (orbitRef.current) {
+                    orbitRef.current.target.set(nextX, playerPosition.y + 1.5, nextZ);
+                    orbitRef.current.update();
+                }
+            }
         }
     });
 
@@ -156,10 +186,10 @@ export function Controls({ model }: ControlsProps) {
         <OrbitControls
             ref={orbitRef}
             enableZoom={true}
-            enablePan={false}
-            minDistance={5}
-            maxDistance={15}
-            maxPolarAngle={Math.PI / 2 - 0.1}
+            enablePan={cameraMode === "free"}
+            minDistance={cameraMode === "first" ? 0.1 : 5}
+            maxDistance={cameraMode === "free" ? 100 : 15}
+            maxPolarAngle={cameraMode === "free" ? Math.PI : Math.PI / 2 - 0.1}
         />
     );
 }

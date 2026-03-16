@@ -297,20 +297,37 @@ io.on("connection", (socket) => {
     console.log(`[hub] 씬 전환: ${user?.nickname} ${currentSceneId} → ${data.target_scene}`);
   });
 
-  // 4. 채팅 (같은 씬에만)
+  // 4. 채팅 (근거리: 15 units 이내 / /all 접두사: 씬 전체)
+  const NEARBY_CHAT_RANGE = 15;
   socket.on("chat", (data: { message: string }) => {
     const sceneId = getRoomOf(socket.id);
     if (!sceneId) return;
     const room = rooms[sceneId];
     const user = room?.[socket.id];
     if (!user) return;
-    Object.keys(room).forEach((sid) => {
-      io.to(sid).emit("chat", {
-        id: socket.id,
-        sender: user.nickname || "Anonymous",
-        message: data.message,
-        timestamp: Date.now(),
-      });
+
+    const isGlobal = data.message.startsWith("/all ");
+    const message = isGlobal ? data.message.slice(5) : data.message;
+
+    const chatPayload = {
+      id: socket.id,
+      sender: user.nickname || "Anonymous",
+      message,
+      timestamp: Date.now(),
+    };
+
+    Object.entries(room).forEach(([sid, target]) => {
+      if (isGlobal) {
+        io.to(sid).emit("chat", chatPayload);
+        return;
+      }
+      // 근거리 필터
+      const dx = target.position.x - user.position.x;
+      const dz = target.position.z - user.position.z;
+      const dist = Math.sqrt(dx * dx + dz * dz);
+      if (dist <= NEARBY_CHAT_RANGE) {
+        io.to(sid).emit("chat", chatPayload);
+      }
     });
   });
 

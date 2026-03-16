@@ -8,16 +8,23 @@ import { SkeletonUtils } from "three-stdlib";
 
 interface ModelProps {
     action: string;
+    avatarColor?: string;
 }
 
-export function Chunsim({ action }: ModelProps) {
+export function Chunsim({ action, avatarColor }: ModelProps) {
     const group = useRef<THREE.Group>(null);
     const { scene, animations } = useGLTF("/chunsim.glb");
 
     // SkeletonUtils.clone을 사용하여 Scene을 깊은 복사(Deep Clone)합니다.
-    // 이렇게 해야 여러 캐릭터가 렌더링될 때 뼈대(Bone)가 서로 간섭하지 않습니다.
     const clone = useMemo(() => SkeletonUtils.clone(scene), [scene]);
     const { nodes, materials } = useGraph(clone) as any;
+
+    // 색조 오버레이
+    const bodyMaterial = useMemo(() => {
+        const mat = (materials.Ch03_Body as THREE.MeshStandardMaterial).clone();
+        if (avatarColor) mat.color = new THREE.Color(avatarColor);
+        return mat;
+    }, [materials.Ch03_Body, avatarColor]);
 
     const { actions } = useAnimations(animations, group);
 
@@ -44,8 +51,8 @@ export function Chunsim({ action }: ModelProps) {
                         castShadow
                         name="Ch03"
                         geometry={nodes.Ch03.geometry}
-                        material={materials.Ch03_Body}
-                        skeleton={nodes.Ch03.skeleton} // 복제된 스켈레톤 사용
+                        material={bodyMaterial}
+                        skeleton={nodes.Ch03.skeleton}
                     />
                 </group>
             </group>

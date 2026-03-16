@@ -28,6 +28,7 @@ export function Player({ nickname }: PlayerProps) {
     const isAutoMoving = useGameStore((state) => state.isAutoMoving);
     const myBotId = useGameStore((state) => state.myBotId);
     const botBadges = useGameStore((state) => state.botBadges);
+    const avatarColor = useGameStore((state) => state.avatarColor);
     const myBadges = myBotId ? (botBadges[myBotId] ?? []) : []; // 자동 이동 상태 구독
 
     // Physics body (currently purely for collision if needed, but movement is manual in original)
@@ -60,7 +61,7 @@ export function Player({ nickname }: PlayerProps) {
     return (
         <>
             <group ref={modelRef}>
-                <Chunsim action={action} />
+                <Chunsim action={action} avatarColor={avatarColor} />
                 <Html distanceFactor={10} position={[0, 2.2, 0]} center>
                     <div className="flex flex-col items-center gap-1">
                         {myBadges.length > 0 && (
