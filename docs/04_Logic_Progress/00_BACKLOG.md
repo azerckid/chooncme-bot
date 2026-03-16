@@ -176,6 +176,33 @@
 
 ---
 
+### v0.9 — 허브 씬 에디터
+> 명세: [11_SCENE_EDITOR_SPEC.md](../03_Technical_Specs/11_SCENE_EDITOR_SPEC.md)
+
+**v0.9-A — 기본 뷰포트**
+- [ ] `hub/client/src/app/editor/page.tsx` — `/editor` 라우트 생성
+- [ ] `EditorCanvas.tsx` — OrbitControls + Grid + GizmoHelper
+
+**v0.9-B — GLB 임포트 + TransformControls**
+- [ ] 드래그&드롭 / Import 버튼으로 GLB 파일 로드
+- [ ] 선택된 오브젝트에 TransformControls 기즈모 표시
+- [ ] W/E/R 단축키로 translate/rotate/scale 전환
+
+**v0.9-C — 씬 패널 + Properties**
+- [ ] `ScenePanel.tsx` — 오브젝트 목록 (선택, 삭제, 복제)
+- [ ] Properties 패널 — 수치 직접 입력 (Position/Rotation/Scale)
+
+**v0.9-D — 내보내기/불러오기 + 스냅**
+- [ ] scene.json Export (브라우저 다운로드)
+- [ ] scene.json Load (파일 선택)
+- [ ] 그리드 스냅 ON/OFF 토글
+
+**v0.9-E — 허브 런타임 SceneLoader**
+- [ ] `SceneLoader.tsx` — 허브 시작 시 `public/scene.json` 자동 로드
+- [ ] GLB 없을 시 플레이스홀더 박스 표시
+
+---
+
 ### v0.5 — 봇 자율 아바타 (v0.8-hackathon 이후)
 > 명세: [05_BOT_PRESENCE_SPEC.md](../03_Technical_Specs/05_BOT_PRESENCE_SPEC.md)
 
