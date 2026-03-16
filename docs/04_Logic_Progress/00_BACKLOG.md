@@ -192,14 +192,30 @@
 - [ ] `ScenePanel.tsx` — 오브젝트 목록 (선택, 삭제, 복제)
 - [ ] Properties 패널 — 수치 직접 입력 (Position/Rotation/Scale)
 
-**v0.9-D — 내보내기/불러오기 + 스냅**
-- [ ] scene.json Export (브라우저 다운로드)
-- [ ] scene.json Load (파일 선택)
+**v0.9-D — 포털 시스템**
+- [ ] [Add Portal] 버튼 → 포털 오브젝트 생성 (분홍 링 표시)
+- [ ] 포털 Properties — target_scene, radius, spawn_position, label
+- [ ] 포털 목록 아이콘 구분 (오브젝트와 분리)
+
+**v0.9-E — 씬 탭 관리 (다중 씬)**
+- [ ] `SceneTabBar.tsx` — 씬 추가/전환/삭제/이름 변경
+- [ ] 씬별 독립적인 오브젝트+포털 상태 관리
+
+**v0.9-F — 내보내기/불러오기 + 스냅**
+- [ ] `manifest.json` + `scene_XX.json` Export (브라우저 다운로드)
+- [ ] manifest.json Load → 연결된 씬 파일 순차 로드
 - [ ] 그리드 스냅 ON/OFF 토글
 
-**v0.9-E — 허브 런타임 SceneLoader**
-- [ ] `SceneLoader.tsx` — 허브 시작 시 `public/scene.json` 자동 로드
+**v0.9-G — 허브 런타임 SceneLoader + 포털**
+- [ ] `SceneLoader.tsx` — manifest.json → 씬 파일 자동 로드
+- [ ] `PortalZone.tsx` — 포털 시각 + 진입 감지 + 페이드 전환 연출
 - [ ] GLB 없을 시 플레이스홀더 박스 표시
+
+**v0.9-H — 허브 서버 룸 시스템**
+- [ ] `rooms: Record<sceneId, Record<socketId, User>>` 구조로 변경
+- [ ] `changeScene` 이벤트 — 씬 간 이동 처리
+- [ ] 씬 만원 처리 (`MAX_PLAYERS_PER_SCENE`)
+- [ ] 씬별 브로드캐스트 분리 (같은 씬 플레이어에게만 전송)
 
 ---
 
