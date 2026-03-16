@@ -231,6 +231,76 @@
 
 ---
 
+### v0.10 — 허브 월드 필수 요소
+> 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
+
+**플레이어 충돌 감지**
+- [ ] `Player.tsx` — 이동 방향 Raycaster 발사, SceneObject 메쉬 충돌 시 이동 차단
+- [ ] 감지 거리 `agentRadius(0.4)`, 4방향(전/후/좌/우) 체크
+
+**씬별 환경 설정**
+- [ ] `scene_XX.json`에 `environment` 필드 추가 (sky, fog, ambient_light, directional_light)
+- [ ] `SceneEnvironment.tsx` — 씬 로드 시 환경 자동 적용
+- [ ] 씬 에디터 Environment 패널 추가 (씬별 sky preset, fog, 조명 설정)
+
+**씬 전환 로딩 화면**
+- [ ] `SceneLoadingOverlay.tsx` — 씬 이름 + 분홍 스피너
+- [ ] Three.js `LoadingManager` 연동 — 로드 퍼센트 표시
+- [ ] 10초 타임아웃 처리 — 실패 시 원래 씬 복귀
+
+---
+
+### v0.11 — 허브 월드 권장 요소
+> 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
+
+**미니맵**
+- [ ] `Minimap.tsx` — 화면 우하단 160×160 Canvas 2D 오버레이
+- [ ] 내 캐릭터(분홍), 다른 플레이어(흰), 봇(분홍 소형), 포털(링 아이콘) 표시
+- [ ] 씬 크기 기준 자동 스케일, 100ms 업데이트
+
+**플레이어 프로필 클릭**
+- [ ] `OtherPlayer.tsx` — 클릭 이벤트 → `PlayerProfilePopup` 표시
+- [ ] `PlayerProfilePopup.tsx` — 닉네임/봇ID/씬/뱃지/매칭 요청 버튼
+
+**씬 이름 HUD**
+- [ ] `SceneNameHUD.tsx` — 씬 전환 완료 시 페이드 인 → 3초 후 페이드 아웃
+- [ ] HUD 좌측 패널에 현재 씬 이름 소형 텍스트 항시 표시
+
+---
+
+### v0.12 — 허브 월드 선택 A
+> 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
+
+**모바일 가상 조이스틱**
+- [ ] `nipplejs` 설치
+- [ ] `VirtualJoystick.tsx` — 터치 기기 자동 감지, 좌하단 표시
+- [ ] 조이스틱 출력 → 기존 `keyPressed` 상태 매핑
+
+**공간 오디오**
+- [ ] Three.js `PositionalAudio` — 거리 기반 볼륨 감쇠
+- [ ] `scene_XX.json`에 `environment.bgm` 필드 추가
+- [ ] 포털 진입음, 매칭 알림음 추가
+
+---
+
+### v0.13 — 허브 월드 선택 B
+> 명세: [12_HUB_WORLD_SPEC.md](../03_Technical_Specs/12_HUB_WORLD_SPEC.md)
+
+**캐릭터 커스터마이징**
+- [ ] Three.js Material 색조 오버레이 (상의/하의 색상)
+- [ ] `config.json`에 `avatar_color` 필드 추가
+- [ ] `join` 이벤트에 `avatar_color` 포함 → 다른 클라이언트 반영
+
+**근거리 채팅**
+- [ ] 허브 서버: 채팅 발신자 기준 15 units 이내 플레이어만 필터 전달
+- [ ] `/all` 접두사 시 씬 전체 브로드캐스트 유지
+
+**카메라 모드 전환**
+- [ ] `V` 키: 3인칭 ↔ 1인칭 토글
+- [ ] `F` 키: 자유 카메라 모드 (OrbitControls 활성)
+
+---
+
 ### v0.5 — 봇 자율 아바타 (v0.8-hackathon 이후)
 > 명세: [05_BOT_PRESENCE_SPEC.md](../03_Technical_Specs/05_BOT_PRESENCE_SPEC.md)
 
