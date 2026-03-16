@@ -131,6 +131,10 @@ MAX_ACTIVE_BOTS = 50  (기본값)
 
 초과 시 가장 오래된 봇 자동 disconnect.
 
+### 6.4 다중 씬(v0.9) 대응
+
+v0.9에서 허브 서버가 씬별 룸(`rooms: Record<sceneId, ...>`) 구조로 전환되면, 봇은 **default_scene(manifest.default_scene)** 에만 `join`한다. 봇은 포털을 통한 `changeScene`을 수행하지 않으며, 한 씬에만 상주한다. (명세: [11_SCENE_EDITOR_SPEC](./11_SCENE_EDITOR_SPEC.md) §3.2, §6.1-6.4, §10.1)
+
 ---
 
 ## 7. 알려진 한계 (v0.5 기준)
@@ -138,7 +142,7 @@ MAX_ACTIVE_BOTS = 50  (기본값)
 | 한계 | 이유 | 해결 시점 |
 | :--- | :--- | :--- |
 | 서버 재시작 시 봇 연결 초기화 | in-memory 저장 | 배포(v0.6) 이후 DB 도입 단계 |
-| 봇 이동이 단순 랜덤 | AI 기반 이동 패턴 미구현 | v0.6 이후 단계 |
+| 봇 이동이 단순 랜덤 | AI 기반 이동 패턴 미구현 | v0.9-J에서 NavMesh 기반 경로 이동 도입 시, navmesh가 있는 씬에서는 장애물 우회 이동으로 전환 |
 | 봇끼리 대화 불가 | Bot-to-Bot은 `/match/start` 통해서만 | 현재 명세 유지 |
 
 ---

@@ -127,6 +127,7 @@ interface SceneFile {
   exported_at: string;      // ISO timestamp
   objects: SceneObject[];   // 오브젝트 목록
   portals: Portal[];        // 포털 목록
+  // 확장 필드: navmesh (§12.4), environment ([12_HUB_WORLD_SPEC] v0.10)
 }
 
 interface SceneObject {
@@ -265,6 +266,12 @@ if (Object.keys(rooms[targetScene] ?? {}).length >= MAX_PLAYERS_PER_SCENE) {
 }
 ```
 
+### 6.4 서버의 scene_id 정책
+
+- 서버는 `manifest.json`을 읽지 않는다. 클라이언트가 `join`/`changeScene` 시 보낸 `scene_id`를 그대로 룸 키로 사용한다.
+- 유효한 씬 ID 집합을 서버가 검증하지 않으므로, 클라이언트는 반드시 자신이 로드한 `manifest.json`의 `scenes[].id` 및 `default_scene`만 사용해야 한다.
+- 룸 개수는 `MAX_SCENES`(기본 20)로 제한할 수 있으며, 그 초과 시 새 룸 생성 차단 정책은 선택 구현이다.
+
 ---
 
 ## 7. 에디터 구성
@@ -380,6 +387,13 @@ GLB 파일 선택
 [Load] 버튼 → `manifest.json` 선택 → 연결된 모든 씬 파일 순차 로드.
 GLB가 없는 오브젝트는 반투명 박스 플레이스홀더로 표시.
 
+- **manifest 유효성**: `default_scene`이 `scenes[].id` 중 하나인지 검사한다. 아니면 에러 토스트 또는 첫 번째 씬을 기본값으로 사용한다.
+- **스키마 검증**: 프로젝트 원칙상 Zod 사용. 불러오기 및 런타임 씬 로드 시 `manifest.json`·`scene_XX.json`을 Zod 스키마로 검증하는 것을 권장한다.
+
+### 9.3 배포 시 scenes 폴더 구성
+
+에디터에서 내보낸 뒤 허브 클라이언트에 반영하는 순서: (1) `manifest.json`을 `public/scenes/`에 저장, (2) 각 `scene_XX.json`을 동일 경로에 저장, (3) 씬에서 참조하는 GLB 파일을 `public/scenes/models/`에 수동 복사. 이후 허브 클라이언트 재시작(또는 새로고침) 시 반영된다.
+
 ---
 
 ## 10. 허브 런타임 씬 로드
@@ -394,7 +408,7 @@ GLB가 없는 오브젝트는 반투명 박스 플레이스홀더로 표시.
         → socket.emit("join", { ..., scene_id: default_scene })
 ```
 
-`manifest.json`이 없으면 기존 하드코딩 씬 그대로 동작 (하위 호환).
+`manifest.json`이 없으면 기존 하드코딩 씬 그대로 동작 (하위 호환). 런타임에서 manifest·씬 파일 로드 시 Zod 스키마 검증 권장 (§9.2).
 
 ### 10.2 씬 전환 (포털 진입)
 
@@ -538,7 +552,7 @@ scene_XX.json 로드
 
 ---
 
-## 13. 개발 단계
+## 14. 개발 단계
 
 | 단계 | 내용 |
 | :--- | :--- |
@@ -555,7 +569,7 @@ scene_XX.json 로드
 
 ---
 
-## 14. 알려진 한계 (v0.9 기준)
+## 15. 알려진 한계 (v0.9 기준)
 
 | 한계 | 이유 | 해결 시점 |
 | :--- | :--- | :--- |
@@ -567,7 +581,7 @@ scene_XX.json 로드
 
 ---
 
-## 15. Related Documents
+## 16. Related Documents
 
 - **Technical_Specs**: [System Architecture](./02_SYSTEM_ARCHITECTURE.md) - 전체 시스템 구성 및 허브 서버 구조
 - **Technical_Specs**: [Hub Experience Spec](./09_HUB_EXPERIENCE_SPEC.md) - 허브 공간 경험 설계 (배치 대상 오브젝트 맥락)

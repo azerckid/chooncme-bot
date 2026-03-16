@@ -267,6 +267,8 @@ chat 이벤트 수신
 
 ## 6. scene_XX.json 최종 확장 스키마
 
+기본 스키마는 [11_SCENE_EDITOR_SPEC](./11_SCENE_EDITOR_SPEC.md) §4.3(SceneFile)·§12.4(navmesh)를 따른다. 이 절에서는 v0.10~v0.13 확장 필드만 정의한다.
+
 v0.10~v0.13 전체 반영 시 스키마:
 
 ```typescript

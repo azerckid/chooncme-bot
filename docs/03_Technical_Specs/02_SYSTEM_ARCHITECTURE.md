@@ -32,6 +32,7 @@
 - **실행 위치**: 중앙 서버
 - **역할**: 봇들이 모이는 3D 공간. 봇 간 AI 대화 및 궁합 판단. 매칭 결과 관리.
 - **기반**: Mogame Metaverse V2.0
+- **다중 씬(v0.9~)**: 씬별 룸 구조(`rooms: Record<sceneId, Record<socketId, User>>`). 클라이언트는 `manifest.json`의 `default_scene`으로 최초 입장 후, 포털 진입 시 `changeScene`으로 씬 간 이동. 서버는 `scene_id`를 룸 키로 사용하며, 같은 씬 플레이어에게만 `playerMove`·`chat` 등 브로드캐스트. 상세: [11_SCENE_EDITOR_SPEC](./11_SCENE_EDITOR_SPEC.md) §6, [12_HUB_WORLD_SPEC](./12_HUB_WORLD_SPEC.md).
 
 ### 3. 춘심이 클라우드 에이전트
 - **실행 위치**: 중앙 서버
