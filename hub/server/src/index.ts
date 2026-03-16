@@ -38,6 +38,7 @@ interface User {
   isBot?: boolean;
   criteria?: MatchCriteria;
   scene_id: string;
+  avatarColor?: string;
 }
 
 // ── 룸 구조 ─────────────────────────────────────────────────────────────────
@@ -195,6 +196,7 @@ io.on("connection", (socket) => {
     isBot?: boolean;
     criteria?: MatchCriteria;
     scene_id?: string;
+    avatarColor?: string;
   }) => {
     const sceneId = data.scene_id || DEFAULT_SCENE_ID;
     const room = getRoom(sceneId);
@@ -212,6 +214,7 @@ io.on("connection", (socket) => {
       isBot: data.isBot ?? false,
       criteria: data.criteria,
       scene_id: sceneId,
+      avatarColor: data.avatarColor,
       position: {
         x: (Math.random() - 0.5) * 10,
         y: 0,

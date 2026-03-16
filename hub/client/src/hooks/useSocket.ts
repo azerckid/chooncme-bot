@@ -7,6 +7,7 @@ export function useSocket() {
     const myNickname = useGameStore((state) => state.myNickname);
     const myBotId = useGameStore((state) => state.myBotId);
     const myCriteria = useGameStore((state) => state.myCriteria);
+    const avatarColor = useGameStore((state) => state.avatarColor);
     const isStarted = useGameStore((state) => state.isStarted);
     const playerPosition = useGameStore((state) => state.playerPosition);
 
@@ -20,6 +21,7 @@ export function useSocket() {
     const setIsAutoMoving = useGameStore((state) => state.setIsAutoMoving);
     const setBotBadges = useGameStore((state) => state.setBotBadges);
     const setSpectatorMatch = useGameStore((state) => state.setSpectatorMatch);
+    const setPlayerPosition = useGameStore((state) => state.setPlayerPosition);
 
     // 1. 소켓 연결 및 초기화
     useEffect(() => {
@@ -29,8 +31,7 @@ export function useSocket() {
 
         const onConnect = () => {
             console.log("Socket Connected! ID:", socket.id);
-            // 🚀 연결 성공 시 join 이벤트 전송 (서버 코드에 맞게 { nickname } 전송)
-            socket.emit("join", { nickname: myNickname, botId: myBotId || undefined, criteria: myCriteria });
+            socket.emit("join", { nickname: myNickname, botId: myBotId || undefined, criteria: myCriteria, avatarColor });
         };
 
         const onConnectError = (error: any) => {
@@ -55,7 +56,7 @@ export function useSocket() {
         // 서버 코드 기준: playerJoined 이벤트 (새로운 유저 입장)
         const onPlayerJoined = (user: any) => {
             console.log("Player Joined:", user);
-            updateOtherPlayerPosition(user.id, user.position, user.action, user.nickname, user.botId, user.isBot);
+            updateOtherPlayerPosition(user.id, user.position, user.action, user.nickname, user.botId, user.isBot, user.avatarColor);
         };
 
         // 서버 코드 기준: playerMoved 이벤트
@@ -102,6 +103,12 @@ export function useSocket() {
             setSpectatorMatch({ ...data, status: 'in_progress' });
         };
 
+        // 씬 전환 완료: 로컬 플레이어 위치를 spawn 위치로 갱신
+        const onSceneChanged = (data: { scene_id: string; spawn_position: [number, number, number] }) => {
+            const [x, z] = [data.spawn_position[0], data.spawn_position[2]];
+            setPlayerPosition({ x, y: data.spawn_position[1], z });
+        };
+
         // 관전 모드: 매칭 완료
         const onMatchCompleted = (data: {
             matchId: string;
@@ -129,6 +136,7 @@ export function useSocket() {
         socket.on("badgeUpdate", onBadgeUpdate);
         socket.on("matchStarted", onMatchStarted);
         socket.on("matchCompleted", onMatchCompleted);
+        socket.on("sceneChanged", onSceneChanged);
 
         // 연결 시도 (리스너 등록 후)
         if (!socket.connected) {
@@ -136,7 +144,7 @@ export function useSocket() {
             socket.connect();
         } else {
             // 이미 연결되어 있다면 join 바로 전송 (재진입 등)
-            socket.emit("join", { nickname: myNickname, botId: myBotId || undefined, criteria: myCriteria });
+            socket.emit("join", { nickname: myNickname, botId: myBotId || undefined, criteria: myCriteria, avatarColor });
         }
 
         return () => {
@@ -152,8 +160,9 @@ export function useSocket() {
             socket.off("badgeUpdate", onBadgeUpdate);
             socket.off("matchStarted", onMatchStarted);
             socket.off("matchCompleted", onMatchCompleted);
+            socket.off("sceneChanged", onSceneChanged);
         };
-    }, [isStarted, myNickname, myBotId, myCriteria, setOtherPlayers, updateOtherPlayerPosition, removeOtherPlayer, setNearAnnouncement, setBankGlowing, setWalkingToBankBotIds, setTargetPosition, setIsAutoMoving, setBotBadges, setSpectatorMatch]);
+    }, [isStarted, myNickname, myBotId, myCriteria, avatarColor, setOtherPlayers, updateOtherPlayerPosition, removeOtherPlayer, setNearAnnouncement, setBankGlowing, setWalkingToBankBotIds, setTargetPosition, setIsAutoMoving, setBotBadges, setSpectatorMatch, setPlayerPosition]);
 
     // 2. 내 위치 전송 (Throttling 적용: 50ms)
     const lastEmitTime = useRef<number>(0);

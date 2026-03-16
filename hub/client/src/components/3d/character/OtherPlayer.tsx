@@ -15,9 +15,10 @@ interface OtherPlayerProps {
     nickname?: string;
     botId?: string;
     isBot?: boolean;
+    avatarColor?: string;
 }
 
-export function OtherPlayer({ id, position, action = "Idle", nickname, botId, isBot = false }: OtherPlayerProps) {
+export function OtherPlayer({ id, position, action = "Idle", nickname, botId, isBot = false, avatarColor }: OtherPlayerProps) {
     const botBadges = useGameStore((state) => state.botBadges);
     const badges = botId ? (botBadges[botId] ?? []) : [];
     const groupRef = useRef<THREE.Group>(null);
@@ -83,7 +84,7 @@ export function OtherPlayer({ id, position, action = "Idle", nickname, botId, is
 
     return (
         <group ref={groupRef} onClick={handleClick}>
-            <Chunsim action={currentAction} />
+            <Chunsim action={currentAction} avatarColor={avatarColor} />
             {showProfile && (
                 <Html center position={[0, 4, 0]}>
                     <PlayerProfilePopup

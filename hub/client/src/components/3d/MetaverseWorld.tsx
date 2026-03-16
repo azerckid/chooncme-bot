@@ -45,6 +45,7 @@ export default function MetaverseWorld() {
     const [sceneLoading, setSceneLoading] = useState(false);
     const [sceneLoadingName, setSceneLoadingName] = useState<string | undefined>();
     const [currentSceneName, setCurrentSceneName] = useState<string | null>(null);
+    const [scenePortals, setScenePortals] = useState<{ id: string; position: [number, number, number]; radius: number }[]>([]);
 
     // Store Actions for Click Move
     const setTargetPosition = useGameStore((state) => state.setTargetPosition);
@@ -55,6 +56,7 @@ export default function MetaverseWorld() {
 
     const handleChangeScene = (targetScene: string, spawnPosition: [number, number, number]) => {
         setSceneLoading(true);
+        setSceneLoadingName(targetScene); // 즉시 표시 (실제 이름은 onSceneLoaded 시 갱신)
         socket.emit("changeScene", { target_scene: targetScene, spawn_position: spawnPosition });
     };
 
@@ -109,6 +111,7 @@ export default function MetaverseWorld() {
                         <SceneLoader
                             onChangeScene={handleChangeScene}
                             onSceneLoaded={handleSceneLoaded}
+                            onPortalsChanged={setScenePortals}
                         />
                         <Player nickname={nickname} />
                         {/* 다른 유저들 렌더링 */}
@@ -121,6 +124,7 @@ export default function MetaverseWorld() {
                                 nickname={player.nickname}
                                 botId={player.botId}
                                 isBot={player.isBot}
+                                avatarColor={player.avatarColor}
                             />
                         ))}
 
@@ -289,7 +293,7 @@ export default function MetaverseWorld() {
             {isStarted && <SceneNameHUD sceneName={currentSceneName} />}
 
             {/* 미니맵 */}
-            {isStarted && <Minimap />}
+            {isStarted && <Minimap portals={scenePortals} />}
 
             {/* 모바일 가상 조이스틱 (터치 기기 자동 감지) */}
             {isStarted && <VirtualJoystick />}

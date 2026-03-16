@@ -88,9 +88,10 @@ function FallbackBox({ obj }: { obj: SceneObject }) {
 interface SceneLoaderProps {
     onChangeScene?: (targetScene: string, spawnPosition: [number, number, number]) => void;
     onSceneLoaded?: (sceneName: string) => void;
+    onPortalsChanged?: (portals: { id: string; position: [number, number, number]; radius: number }[]) => void;
 }
 
-export function SceneLoader({ onChangeScene, onSceneLoaded }: SceneLoaderProps) {
+export function SceneLoader({ onChangeScene, onSceneLoaded, onPortalsChanged }: SceneLoaderProps) {
     const [manifest, setManifest] = useState<SceneManifest | null>(null);
     const [sceneData, setSceneData] = useState<SceneFile | null>(null);
     const colliderMeshes = useRef<Map<string, THREE.Mesh[]>>(new Map());
@@ -129,6 +130,7 @@ export function SceneLoader({ onChangeScene, onSceneLoaded }: SceneLoaderProps) 
             const data: SceneFile = await res.json();
             setSceneData(data);
             onSceneLoaded?.(data.name);
+            onPortalsChanged?.(data.portals.map((p) => ({ id: p.id, position: p.position, radius: p.radius })));
         } catch {
             console.error("씬 로드 실패:", meta.file);
         }
