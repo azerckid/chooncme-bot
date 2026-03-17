@@ -64,7 +64,7 @@
 | 로컬 → 클라우드 에이전트 | 세션 요약, 프로파일 벡터, 세션 메타(시간대·빈도·토픽) | 대화 원문, 브라우저 히스토리 원문, OS 로그 |
 | 클라우드 에이전트 → 허브 | 프로파일 요약, 봇 ID | 개인 식별 정보, 원문 데이터 일체 |
 
-상세 스키마는 v0.2 명세에서 정의. 프라이버시 원칙 전문: [Design Principles](../01_Concept_Design/03_DESIGN_PRINCIPLES.md) 원칙 1.
+상세 스키마는 v0.2 명세에서 정의. 프라이버시 원칙 전문: [13_PRIVACY_DATA_MODEL](./13_PRIVACY_DATA_MODEL.md).
 
 ---
 
@@ -105,3 +105,4 @@
 - **Concept_Design**: [Roadmap](../01_Concept_Design/02_ROADMAP.md)
 - **Technical_Specs**: [CLI 기술 명세](./01_CLI_SPEC.md)
 - **Technical_Specs**: [NEAR Protocol 통합 검토](./03_NEAR_PROTOCOL_ANALYSIS.md) — 웹3 인증 후보
+- **Technical_Specs**: [프라이버시 & 데이터 모델](./13_PRIVACY_DATA_MODEL.md) — 데이터 분류, 저장 위치, ZK 도입 판단
